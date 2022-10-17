@@ -25,7 +25,7 @@ INSERT INTO person (
 );
 
 INSERT INTO client (
-    company,
+    company_name,
     website,
     phone,
     street_address,
