@@ -84,6 +84,20 @@ public class jdbcClientDAO implements EntityDao<Client> {
 
     private static final String DELETE_CLIENT = "DELETE FROM client WHERE client_id = :clientId";
 
+    private static final String GET_CONTACTS = "SELECT  company_name, " +
+                                                       "first_name, " +
+                                                       "last_name ," +
+                                                       "email_address, " +
+                                                       "street_address, " +
+                                                       "city, " +
+                                                       "state, " +
+                                                       "zip_code " +
+                                               "FROM client c JOIN client_person_associations cpa" +
+                                               " ON c.client_id = cpa.client_id " +
+                                               "JOIN person p " +
+                                               "ON cpa.person_id = p.person_id " +
+                                               "WHERE cpa.client_id = :clientId";
+
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public jdbcClientDAO(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {

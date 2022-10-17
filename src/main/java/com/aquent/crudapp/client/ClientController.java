@@ -85,6 +85,13 @@ public class ClientController {
         return modelAndView;
     }
 
+    @GetMapping(value = "client-view/{clientId}")
+    public ModelAndView viewClient(@PathVariable Integer clientId) {
+        ModelAndView modelAndView = new ModelAndView("client/client-view");
+        modelAndView.addObject("client", entityService.readEntity(clientId));
+        return modelAndView;
+    }
+
     /**
      * Renders an edit form for an existing client record.
      *

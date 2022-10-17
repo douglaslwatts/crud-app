@@ -43,6 +43,13 @@ public class PersonController {
         return mav;
     }
 
+    @GetMapping(value = "person-view/{personId}")
+    public ModelAndView viewPerson(@PathVariable Integer personId) {
+        ModelAndView modelAndView = new ModelAndView("person/person-view");
+        modelAndView.addObject("person", entityService.readEntity(personId));
+        return modelAndView;
+    }
+
     /**
      * Renders an empty form used to create a new person record.
      *

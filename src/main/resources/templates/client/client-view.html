@@ -1,0 +1,38 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Client View</title>
+  </head>
+  <body>
+    <nav>
+      <a th:href="'/'">Home Page</a>
+      <a href="/client/list">Client List</a>
+    </nav>
+    <h1 th:text="${client.companyName}">Client View</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Website</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td th:text="${client.website}">Website</td>
+        <td th:text="${client.phone}">Phone</td>
+        <td
+            th:text="${client.streetAddress + ' ' + client.city + ', ' + client.state + ' ' + client.zipCode}">
+          Phone
+        <td>
+          <a href="#">Add Contacts</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
