@@ -3,6 +3,9 @@ package com.aquent.crudapp.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aquent.crudapp.interfaces.EntityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,28 +23,30 @@ public class PersonController {
 
     public static final String COMMAND_DELETE = "Delete";
 
-    private final PersonService personService;
+    @Autowired
+    @Qualifier("personService")
+    private final EntityService<Person> entityService;
 
-    public PersonController(PersonService personService) {
-        this.personService = personService;
+    public PersonController(EntityService<Person> entityService) {
+        this.entityService = entityService;
     }
 
     /**
-     * Renders the listing page.
+     * Renders the person listing page.
      *
      * @return list view populated with the current list of people
      */
     @GetMapping(value = "list")
     public ModelAndView list() {
         ModelAndView mav = new ModelAndView("person/list");
-        mav.addObject("persons", personService.listPeople());
+        mav.addObject("persons", entityService.listEntities());
         return mav;
     }
 
     /**
      * Renders an empty form used to create a new person record.
      *
-     * @return create view populated with an empty person
+     * @return view populated with an empty person
      */
     @GetMapping(value = "create")
     public ModelAndView create() {
@@ -57,13 +62,13 @@ public class PersonController {
      * On failure, the form is redisplayed with the validation errors.
      *
      * @param person populated form bean for the person
-     * @return redirect, or create view with errors
+     * @return redirect, or view with errors
      */
     @PostMapping(value = "create")
     public ModelAndView create(Person person) {
-        List<String> errors = personService.validatePerson(person);
+        List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
-            personService.createPerson(person);
+            entityService.createEntity(person);
             return new ModelAndView("redirect:/person/list");
         } else {
             ModelAndView mav = new ModelAndView("person/create");
@@ -82,14 +87,14 @@ public class PersonController {
     @GetMapping(value = "edit/{personId}")
     public ModelAndView edit(@PathVariable Integer personId) {
         ModelAndView mav = new ModelAndView("person/edit");
-        mav.addObject("person", personService.readPerson(personId));
+        mav.addObject("person", entityService.readEntity(personId));
         mav.addObject("errors", new ArrayList<String>());
         return mav;
     }
 
     /**
      * Validates and saves an edited person.
-     * On success, the user is redirected to the listing page.
+     * On success, the user is redirected to the person listing page.
      * On failure, the form is redisplayed with the validation errors.
      *
      * @param person populated form bean for the person
@@ -97,9 +102,9 @@ public class PersonController {
      */
     @PostMapping(value = "edit")
     public ModelAndView edit(Person person) {
-        List<String> errors = personService.validatePerson(person);
+        List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
-            personService.updatePerson(person);
+            entityService.updateEntity(person);
             return new ModelAndView("redirect:/person/list");
         } else {
             ModelAndView mav = new ModelAndView("person/edit");
@@ -118,21 +123,22 @@ public class PersonController {
     @GetMapping(value = "delete/{personId}")
     public ModelAndView delete(@PathVariable Integer personId) {
         ModelAndView mav = new ModelAndView("person/delete");
-        mav.addObject("person", personService.readPerson(personId));
+        mav.addObject("person", entityService.readEntity(personId));
         return mav;
     }
 
     /**
-     * Handles person deletion or cancellation, redirecting to the listing page in either case.
+     * Handles person deletion or cancellation, redirecting to the person listing page in either
+     * case.
      *
      * @param command the command field from the form
      * @param personId the ID of the person to be deleted
-     * @return redirect to the listing page
+     * @return redirect to the person listing page
      */
     @PostMapping(value = "delete")
     public String delete(@RequestParam String command, @RequestParam Integer personId) {
         if (COMMAND_DELETE.equals(command)) {
-            personService.deletePerson(personId);
+            entityService.deleteEntity(personId);
         }
         return "redirect:/person/list";
     }

@@ -8,7 +8,10 @@
   </head>
   <body>
     <h1>Person Listing</h1>
-    <p><a href="/person/create">Create New Person</a></p>
+    <nav>
+      <a th:href="'/'">Home Page</a>
+      <a href="/person/create">Create New Person</a>
+    </nav>
     <th:block th:unless="${#lists.isEmpty(persons)}">
       <table>
         <thead>

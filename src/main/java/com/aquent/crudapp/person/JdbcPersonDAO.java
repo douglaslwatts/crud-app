@@ -5,20 +5,23 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import com.aquent.crudapp.interfaces.EntityDao;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Spring JDBC implementation of {@link PersonDao}.
+ * Spring JDBC implementation of {@link EntityDao}.
  */
-@Component
-public class JdbcPersonDao implements PersonDao {
+@Repository
+@Qualifier("personDAO")
+public class JdbcPersonDAO implements EntityDao<Person> {
 
     private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, person_id";
     private static final String SQL_READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
@@ -31,37 +34,37 @@ public class JdbcPersonDao implements PersonDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public JdbcPersonDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcPersonDAO(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public List<Person> listPeople() {
+    public List<Person> listEntities() {
         return namedParameterJdbcTemplate.getJdbcOperations().query(SQL_LIST_PEOPLE, new PersonRowMapper());
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public Person readPerson(Integer personId) {
+    public Person readEntity(Integer personId) {
         return namedParameterJdbcTemplate.queryForObject(SQL_READ_PERSON, Collections.singletonMap("personId", personId), new PersonRowMapper());
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
-    public void deletePerson(Integer personId) {
+    public void deleteEntity(Integer personId) {
         namedParameterJdbcTemplate.update(SQL_DELETE_PERSON, Collections.singletonMap("personId", personId));
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
-    public void updatePerson(Person person) {
+    public void updateEntity(Person person) {
         namedParameterJdbcTemplate.update(SQL_UPDATE_PERSON, new BeanPropertySqlParameterSource(person));
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
-    public Integer createPerson(Person person) {
+    public Integer createEntity(Person person) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(SQL_CREATE_PERSON, new BeanPropertySqlParameterSource(person), keyHolder);
         return keyHolder.getKey().intValue();
