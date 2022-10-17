@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public interface EntityService<E> {
 
     /**
-     * Retrieves all of the person records.
+     * Retrieves all entity records.
      *
-     * @return list of person records
+     * @return list of entity records
      */
     List<E> listEntities();
 
@@ -21,7 +21,7 @@ public interface EntityService<E> {
      * Creates a new entity record.
      *
      * @param entity the values to save
-     * @return the new person ID
+     * @return the new entity ID
      */
     Integer createEntity(E entity);
 
@@ -41,9 +41,9 @@ public interface EntityService<E> {
     void updateEntity(E entity);
 
     /**
-     * Deletes a person record by ID.
+     * Deletes a entity record by ID.
      *
-     * @param id the person ID
+     * @param id the entity ID
      */
     void deleteEntity(Integer id);
 

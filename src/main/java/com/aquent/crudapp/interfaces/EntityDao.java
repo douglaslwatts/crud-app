@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface EntityDao<E> {
 
     /**
-     * Retrieves all of the entity records.
+     * Retrieves all entity records.
      *
      * @return list of entity records
      */
@@ -36,14 +36,14 @@ public interface EntityDao<E> {
     /**
      * Updates an existing person record.
      *
-     * @param person the new values to save
+     * @param entity the new values to save
      */
-    void updateEntity(E person);
+    void updateEntity(E entity);
 
     /**
-     * Deletes a person record by ID.
+     * Deletes a entity record by ID.
      *
-     * @param id the person ID
+     * @param id the entity ID
      */
     void deleteEntity(Integer id);
 }

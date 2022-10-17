@@ -48,7 +48,7 @@ public class Client {
      *
      * @return The ID of this client
      */
-    public int getClientId() {
+    public Integer getClientId() {
         return clientId;
     }
 
@@ -57,7 +57,7 @@ public class Client {
      *
      * @param clientId The ID to set for this client
      */
-    public void setClientId(int clientId) {
+    public void setClientId(Integer clientId) {
         this.clientId = clientId;
     }
 

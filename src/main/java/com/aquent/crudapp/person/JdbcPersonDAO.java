@@ -6,19 +6,21 @@ import java.util.Collections;
 import java.util.List;
 
 import com.aquent.crudapp.interfaces.EntityDao;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Spring JDBC implementation of {@link EntityDao}.
  */
-@Component
+@Repository
+@Qualifier("personDAO")
 public class JdbcPersonDAO implements EntityDao<Person> {
 
     private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, person_id";

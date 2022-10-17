@@ -9,20 +9,25 @@ import javax.validation.Validator;
 
 import com.aquent.crudapp.interfaces.EntityDao;
 import com.aquent.crudapp.interfaces.EntityService;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation of {@link EntityService}.
  */
-@Component
-public class DefaultPersonService implements EntityService<Person> {
+@Service
+@Qualifier("personService")
+public class PersonService implements EntityService<Person> {
 
+    @Autowired
+    @Qualifier("personDAO")
     private final EntityDao<Person> entityDao;
     private final Validator         validator;
 
-    public DefaultPersonService(EntityDao<Person> entityDao, Validator validator) {
+    public PersonService(EntityDao<Person> entityDao, Validator validator) {
         this.entityDao = entityDao;
         this.validator = validator;
     }
