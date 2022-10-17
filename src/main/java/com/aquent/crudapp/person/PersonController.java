@@ -3,6 +3,7 @@ package com.aquent.crudapp.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aquent.crudapp.interfaces.EntityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +21,10 @@ public class PersonController {
 
     public static final String COMMAND_DELETE = "Delete";
 
-    private final PersonService personService;
+    private final EntityService<Person> entityService;
 
-    public PersonController(PersonService personService) {
-        this.personService = personService;
+    public PersonController(EntityService<Person> entityService) {
+        this.entityService = entityService;
     }
 
     /**
@@ -34,7 +35,7 @@ public class PersonController {
     @GetMapping(value = "list")
     public ModelAndView list() {
         ModelAndView mav = new ModelAndView("person/list");
-        mav.addObject("persons", personService.listPeople());
+        mav.addObject("persons", entityService.listEntities());
         return mav;
     }
 
@@ -61,9 +62,9 @@ public class PersonController {
      */
     @PostMapping(value = "create")
     public ModelAndView create(Person person) {
-        List<String> errors = personService.validatePerson(person);
+        List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
-            personService.createPerson(person);
+            entityService.createEntity(person);
             return new ModelAndView("redirect:/person/list");
         } else {
             ModelAndView mav = new ModelAndView("person/create");
@@ -82,7 +83,7 @@ public class PersonController {
     @GetMapping(value = "edit/{personId}")
     public ModelAndView edit(@PathVariable Integer personId) {
         ModelAndView mav = new ModelAndView("person/edit");
-        mav.addObject("person", personService.readPerson(personId));
+        mav.addObject("person", entityService.readEntity(personId));
         mav.addObject("errors", new ArrayList<String>());
         return mav;
     }
@@ -97,9 +98,9 @@ public class PersonController {
      */
     @PostMapping(value = "edit")
     public ModelAndView edit(Person person) {
-        List<String> errors = personService.validatePerson(person);
+        List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
-            personService.updatePerson(person);
+            entityService.updateEntity(person);
             return new ModelAndView("redirect:/person/list");
         } else {
             ModelAndView mav = new ModelAndView("person/edit");
@@ -118,7 +119,7 @@ public class PersonController {
     @GetMapping(value = "delete/{personId}")
     public ModelAndView delete(@PathVariable Integer personId) {
         ModelAndView mav = new ModelAndView("person/delete");
-        mav.addObject("person", personService.readPerson(personId));
+        mav.addObject("person", entityService.readEntity(personId));
         return mav;
     }
 
@@ -132,7 +133,7 @@ public class PersonController {
     @PostMapping(value = "delete")
     public String delete(@RequestParam String command, @RequestParam Integer personId) {
         if (COMMAND_DELETE.equals(command)) {
-            personService.deletePerson(personId);
+            entityService.deleteEntity(personId);
         }
         return "redirect:/person/list";
     }
