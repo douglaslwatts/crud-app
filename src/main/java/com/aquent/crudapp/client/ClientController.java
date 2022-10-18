@@ -116,11 +116,16 @@ public class ClientController {
      * @return edit view populated from the person record
      */
     @PostMapping(value = "edit/{clientId}-{personId}")
-    public ModelAndView edit(@PathVariable Integer clientId, @PathVariable Integer personId) {
+    public ModelAndView edit(@PathVariable Integer clientId, @PathVariable Integer personId,
+                             @RequestParam String command) {
+        if ("Add Contact".equals(command)) {
+            entityService.addAssociation(clientId, personId);
+        } else if ("Remove Contact".equals(command)) {
+            entityService.removeAssociation(clientId, personId);
+        }
         ModelAndView mav = new ModelAndView("client/edit");
         mav.addObject("client", entityService.readEntity(clientId));
         mav.addObject("errors", new ArrayList<String>());
-        entityService.addAssociation(clientId, personId);
         return mav;
     }
 
@@ -143,7 +148,13 @@ public class ClientController {
                 modelAndView = new ModelAndView("client/available-contacts-editing");
                 modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
                 modelAndView.addObject("contacts",
-                                       entityService.getAvailableAssociations(client.getClientId()));
+                                       entityService.getAvailableAssociations(
+                                               client.getClientId()));
+            } else if ("See/Remove Contacts".equals(command)) {
+                modelAndView = new ModelAndView("client/current-contacts-editing");
+                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("contacts",
+                                       entityService.getAssociations(client.getClientId()));
             } else {
                 modelAndView = new ModelAndView("redirect:/client/list");
             }
@@ -197,7 +208,6 @@ public class ClientController {
     @PostMapping(value = "remove/{personId}")
     public String remove(@RequestParam Integer clientId, @PathVariable Integer personId,
                          @RequestParam String command) {
-        System.out.println("hit it");
         if (COMMAND_REMOVE.equals(command)) {
             entityService.removeAssociation(clientId, personId);
         }

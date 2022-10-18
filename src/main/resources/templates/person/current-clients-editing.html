@@ -4,10 +4,10 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Available Clients</title>
+  <title>Client View</title>
 </head>
 <body>
-<h1>Available Clients</h1>
+<h2>Current Clients</h2>
 <nav>
   <a th:href="'/'">Home Page</a>
   <a th:href="'/person/edit/' + ${person.personId}"
@@ -15,6 +15,8 @@
     Back to Person
   </a>
 </nav>
+<hr>
+
 <th:block th:unless="${#lists.isEmpty(clients)}">
   <table>
     <thead>
@@ -30,11 +32,11 @@
       <tr>
         <td th:text="${client.companyName}">Company Name</td>
         <td th:text="${client.website}">Website</td>
-        <td th:text="${client.phone}">example.com</td>
+        <td th:text="${client.phone}">Phone</td>
         <td>
           <form th:action="'/person/edit/' + ${person.personId} + '-' + ${client.clientId}"
                 method="post">
-            <input type="submit" name="command" value="Add Client" />
+            <input type="submit" name="command" value="Remove Client" />
           </form>
         </td>
       </tr>
@@ -43,7 +45,7 @@
   </table>
 </th:block>
 <th:block th:if="${#lists.isEmpty(clients)}">
-  <p>You are already associated with all available clients.</p>
+  <p>No clients found.</p>
 </th:block>
 </body>
 </html>
