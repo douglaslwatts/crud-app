@@ -4,10 +4,10 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Available Contacts</title>
+  <title>Client View</title>
 </head>
 <body>
-<h1>Available Contacts</h1>
+<h2>Current Contacts</h2>
 <nav>
   <a th:href="'/'">Home Page</a>
   <a th:href="'/client/edit/' + ${client.clientId}"
@@ -15,6 +15,8 @@
     Back to Client
   </a>
 </nav>
+<hr>
+
 <th:block th:unless="${#lists.isEmpty(contacts)}">
   <table>
     <thead>
@@ -28,13 +30,13 @@
     <tbody>
     <th:block th:each="contact : ${contacts}">
       <tr>
-        <td th:text="${contact.firstName}">First</td>
-        <td th:text="${contact.lastName}">Last</td>
-        <td th:text="${contact.emailAddress}">first.last@email.com</td>
+        <td th:text="${contact.firstName}">First Name</td>
+        <td th:text="${contact.lastName}">Last Name</td>
+        <td th:text="${contact.emailAddress}">Email Address</td>
         <td>
           <form th:action="'/client/edit/' + ${client.clientId} + '-' + ${contact.personId}"
                 method="post">
-            <input type="submit" name="command" value="Add Contact" />
+            <input type="submit" name="command" value="Remove Contact" />
           </form>
         </td>
       </tr>
@@ -43,7 +45,7 @@
   </table>
 </th:block>
 <th:block th:if="${#lists.isEmpty(contacts)}">
-  <p>You are already associated with all available contacts.</p>
+  <p>No contacts found.</p>
 </th:block>
 </body>
 </html>

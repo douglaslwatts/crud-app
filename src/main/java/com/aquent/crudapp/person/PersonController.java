@@ -109,11 +109,16 @@ public class PersonController {
      * @return edit view populated from the person record
      */
     @PostMapping(value = "edit/{personId}-{clientId}")
-    public ModelAndView edit(@PathVariable Integer personId, @PathVariable Integer clientId) {
+    public ModelAndView edit(@PathVariable Integer personId, @PathVariable Integer clientId,
+                             @RequestParam String command) {
+        if ("Add Client".equals(command)) {
+            entityService.addAssociation(personId, clientId);
+        } else if ("Remove Client".equals(command)) {
+            entityService.removeAssociation(personId, clientId);
+        }
         ModelAndView mav = new ModelAndView("person/edit");
         mav.addObject("person", entityService.readEntity(personId));
         mav.addObject("errors", new ArrayList<String>());
-        entityService.addAssociation(personId, clientId);
         return mav;
     }
 
@@ -134,7 +139,15 @@ public class PersonController {
                 ModelAndView modelAndView = new ModelAndView("person/available-clients-editing");
                 modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
                 modelAndView.addObject("clients",
-                                       entityService.getAvailableAssociations(person.getPersonId()));
+                                       entityService.getAvailableAssociations(
+                                               person.getPersonId()));
+                return modelAndView;
+            } else if ("See/Remove Clients".equals(command)) {
+                ModelAndView modelAndView = new ModelAndView("person/current-clients-editing");
+                modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
+                modelAndView.addObject("clients",
+                                       entityService.getAssociations(
+                                               person.getPersonId()));
                 return modelAndView;
             } else {
                 return new ModelAndView("redirect:/person/list");
