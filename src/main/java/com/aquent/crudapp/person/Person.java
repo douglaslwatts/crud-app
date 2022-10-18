@@ -2,6 +2,8 @@ package com.aquent.crudapp.person;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The person entity corresponding to the "person" table in the database.
@@ -101,4 +103,5 @@ public class Person {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
 }
