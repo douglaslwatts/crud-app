@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Available Clients</title>
+</head>
+<body>
+<h1>Available Clients</h1>
+<nav>
+  <a th:href="'/'">Home Page</a>
+  <a th:href="'/person/person-view/' + ${person.personId}"
+     th:text="'Back to ' + ${person.firstName} + ' ' + ${person.lastName}">
+    Back to Person
+  </a>
+</nav>
+<th:block th:unless="${#lists.isEmpty(clients)}">
+  <table>
+    <thead>
+    <tr>
+      <th>Company Name</th>
+      <th>Website</th>
+      <th>Phone</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="client : ${clients}">
+      <tr>
+        <td th:text="${client.companyName}">Company Name</td>
+        <td th:text="${client.website}">Website</td>
+        <td th:text="${client.phone}">example.com</td>
+        <td>
+          <form th:action="'/person/available-clients/' + ${client.clientId}" method="post">
+            <input type="hidden" name="personId" th:value="${person.personId}" />
+            <input type="submit" value="Add Contact" />
+          </form>
+        </td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+</th:block>
+<th:block th:if="${#lists.isEmpty(clients)}">
+  <p>You are already associated with all available clients.</p>
+</th:block>
+</body>
+</html>

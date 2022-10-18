@@ -27,12 +27,39 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
 
     private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, person_id";
 
+    private static final String LIST_AVAILABLE_CLIENTS = "SELECT  client_id, " +
+                                                                 "company_name, " +
+                                                                 "website, " +
+                                                                 "phone, " +
+                                                                 "street_address, " +
+                                                                 "city, " +
+                                                                 "state, " +
+                                                                 "zip_code " +
+                                                         "FROM client " +
+                                                         "WHERE client_id NOT IN ( " +
+                                                            "SELECT client_id " +
+                                                            "FROM client_person_associations " +
+                                                            "WHERE person_id = :personId " +
+                                                         ") " +
+                                                         "ORDER BY company_name, website";
+
     private static final String SQL_READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
+
     private static final String READ_CLIENT = "SELECT * FROM client WHERE client_id = :clientId";
+
     private static final String SQL_DELETE_PERSON = "DELETE FROM person WHERE person_id = :personId";
+
     private static final String REMOVE_ASSOCIATION = "DELETE FROM client_person_associations " +
                                                      "WHERE person_id = :personId " +
                                                      "AND client_id = :clientId";
+
+    private static final String ADD_ASSOCIATION = "INSERT INTO client_person_associations ( " +
+                                                      "client_id, " +
+                                                      "person_id " +
+                                                  ") VALUES ( " +
+                                                      ":clientId, " +
+                                                      ":personId " +
+                                                  ")";
     private static final String SQL_UPDATE_PERSON = "UPDATE person SET (first_name, last_name, email_address, street_address, city, state, zip_code)"
                                                   + " = (:firstName, :lastName, :emailAddress, :streetAddress, :city, :state, :zipCode)"
                                                   + " WHERE person_id = :personId";
@@ -71,17 +98,24 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
         MapSqlParameterSource paramMapper = new MapSqlParameterSource();
         paramMapper.addValue("personId", personId);
         return namedParameterJdbcTemplate.query(GET_CLIENTS, paramMapper, new ClientRowMapper());
+    }
 
-        /* This one says something is wrong with the SQL, implies param-arg not set for :personId */
-//        return namedParameterJdbcTemplate.getJdbcOperations().query(GET_CLIENTS,
-//                                                                    new ClientRowMapper(),
-//                                                                    personId);
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Client> getAvailableAssociations(Integer personId) {
+        MapSqlParameterSource paramMapper = new MapSqlParameterSource();
+        paramMapper.addValue("personId", personId);
+        return namedParameterJdbcTemplate.query(LIST_AVAILABLE_CLIENTS, paramMapper,
+                                                new ClientRowMapper());
+    }
 
-
-        /* This one says something is wrong with the SQL, implies param-arg not set for :personId */
-//        return namedParameterJdbcTemplate.getJdbcOperations().query(GET_CLIENTS,
-//                                                                    new ArgumentPreparedStatementSetter(new Integer[] {personId}),
-//                                                                    new ClientRowMapper());
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void addAssociation(Integer personId, Integer clientId) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("personId", personId);
+        mapSqlParameterSource.addValue("clientId", clientId);
+        namedParameterJdbcTemplate.update(ADD_ASSOCIATION, mapSqlParameterSource);
     }
 
     @Override
