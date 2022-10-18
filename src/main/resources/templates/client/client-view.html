@@ -29,7 +29,7 @@
             th:text="${client.streetAddress + ' ' + client.city + ', ' + client.state + ' ' + client.zipCode}">
           Phone
         <td>
-          <a th:href="'/available-contacts/' + ${client.clientId}">Add Contacts</a>
+          <a th:href="'/client/available-contacts/' + ${client.clientId}">Add Contacts</a>
         </td>
       </tr>
       </tbody>

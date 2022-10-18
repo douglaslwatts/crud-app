@@ -103,6 +103,21 @@ public class PersonController {
     }
 
     /**
+     * Renders an edit form for an existing person record.
+     *
+     * @param personId the ID of the person to edit
+     * @return edit view populated from the person record
+     */
+    @PostMapping(value = "edit/{personId}-{clientId}")
+    public ModelAndView edit(@PathVariable Integer personId, @PathVariable Integer clientId) {
+        ModelAndView mav = new ModelAndView("person/edit");
+        mav.addObject("person", entityService.readEntity(personId));
+        mav.addObject("errors", new ArrayList<String>());
+        entityService.addAssociation(personId, clientId);
+        return mav;
+    }
+
+    /**
      * Validates and saves an edited person.
      * On success, the user is redirected to the person listing page.
      * On failure, the form is redisplayed with the validation errors.
@@ -111,11 +126,19 @@ public class PersonController {
      * @return redirect, or edit view with errors
      */
     @PostMapping(value = "edit")
-    public ModelAndView edit(Person person) {
+    public ModelAndView edit(Person person, @RequestParam String command) {
         List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
             entityService.updateEntity(person);
-            return new ModelAndView("redirect:/person/list");
+            if ("Add Client".equals(command)) {
+                ModelAndView modelAndView = new ModelAndView("person/available-clients-editing");
+                modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
+                modelAndView.addObject("clients",
+                                       entityService.getAvailableAssociations(person.getPersonId()));
+                return modelAndView;
+            } else {
+                return new ModelAndView("redirect:/person/list");
+            }
         } else {
             ModelAndView mav = new ModelAndView("person/edit");
             mav.addObject("person", person);
@@ -172,6 +195,7 @@ public class PersonController {
 
     @GetMapping(value = "available-clients/{personId}")
     public ModelAndView seeAvailable(@PathVariable Integer personId) {
+        System.out.println("correct one");
         ModelAndView modelAndView = new ModelAndView("person/available-clients");
         modelAndView.addObject("person", entityService.readEntity(personId));
         modelAndView.addObject("clients",
@@ -181,7 +205,14 @@ public class PersonController {
 
     @PostMapping(value = "available-clients/{clientId}")
     public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId) {
+        System.out.println("incorrect one");
         entityService.addAssociation(personId, clientId);
         return "redirect:/person/person-view/" + personId;
     }
+
+    @PostMapping(value = "person-view/{personId}")
+    public String back(@RequestParam Integer personId) {
+        return "redirect:/person/person-view/" + personId;
+    }
+
 }

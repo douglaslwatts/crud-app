@@ -10,8 +10,8 @@
 <h1>Available Contacts</h1>
 <nav>
   <a th:href="'/'">Home Page</a>
-  <a th:href="'/client/client-view/' + ${client.clientId}"
-     th:text="'Back to ' + ${client.companyName}">
+  <a th:href="'/client/edit/' + ${client.clientId}"
+     th:text="'Back to Editing ' + ${client.companyName}">
     Back to Client
   </a>
 </nav>
@@ -32,8 +32,8 @@
         <td th:text="${contact.lastName}">Last</td>
         <td th:text="${contact.emailAddress}">first.last@email.com</td>
         <td>
-          <form th:action="'/client/available-contacts/' + ${contact.personId}" method="post">
-            <input type="hidden" name="clientId" th:value="${client.clientId}" />
+          <form th:action="'/client/edit/' + ${client.clientId} + '-' + ${contact.personId}"
+                method="post">
             <input type="submit" value="Add Contact" />
           </form>
         </td>

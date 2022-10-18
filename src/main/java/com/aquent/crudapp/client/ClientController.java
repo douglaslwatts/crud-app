@@ -110,6 +110,21 @@ public class ClientController {
     }
 
     /**
+     * Renders an edit form for an existing person record.
+     *
+     * @param personId the ID of the person to edit
+     * @return edit view populated from the person record
+     */
+    @PostMapping(value = "edit/{clientId}-{personId}")
+    public ModelAndView edit(@PathVariable Integer clientId, @PathVariable Integer personId) {
+        ModelAndView mav = new ModelAndView("client/edit");
+        mav.addObject("client", entityService.readEntity(clientId));
+        mav.addObject("errors", new ArrayList<String>());
+        entityService.addAssociation(clientId, personId);
+        return mav;
+    }
+
+    /**
      * Validates and saves an edited client.
      * On success, the user is redirected to the client listing page.
      * On failure, the form is redisplayed with the validation errors.
@@ -118,13 +133,20 @@ public class ClientController {
      * @return redirect, or edit view with errors
      */
     @PostMapping(value = "edit")
-    public ModelAndView edit(Client client) {
+    public ModelAndView edit(Client client, @RequestParam String command) {
         List<String> errors = entityService.validateEntity(client);
         ModelAndView modelAndView;
 
         if (errors.isEmpty()) {
             entityService.updateEntity(client);
-            modelAndView = new ModelAndView("redirect:/client/list");
+            if ("Add Contact".equals(command)) {
+                modelAndView = new ModelAndView("client/available-contacts-editing");
+                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("contacts",
+                                       entityService.getAvailableAssociations(client.getClientId()));
+            } else {
+                modelAndView = new ModelAndView("redirect:/client/list");
+            }
         } else {
             modelAndView = new ModelAndView("client/edit");
             modelAndView.addObject("client", client);
@@ -194,6 +216,11 @@ public class ClientController {
     @PostMapping(value = "available-contacts/{personId}")
     public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId) {
         entityService.addAssociation(clientId, personId);
+        return "redirect:/client/client-view/" + clientId;
+    }
+
+    @PostMapping(value = "client-view/{clientId}")
+    public String back(@RequestParam Integer clientId) {
         return "redirect:/client/client-view/" + clientId;
     }
 
