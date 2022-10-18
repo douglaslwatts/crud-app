@@ -10,8 +10,8 @@
 <h1>Available Clients</h1>
 <nav>
   <a th:href="'/'">Home Page</a>
-  <a th:href="'/person/person-view/' + ${person.personId}"
-     th:text="'Back to ' + ${person.firstName} + ' ' + ${person.lastName}">
+  <a th:href="'/person/edit/' + ${person.personId}"
+     th:text="'Back to Editing ' + ${person.firstName} + ' ' + ${person.lastName}">
     Back to Person
   </a>
 </nav>
@@ -32,9 +32,9 @@
         <td th:text="${client.website}">Website</td>
         <td th:text="${client.phone}">example.com</td>
         <td>
-          <form th:action="'/person/available-clients/' + ${client.clientId}" method="post">
-            <input type="hidden" name="personId" th:value="${person.personId}" />
-            <input type="submit" value="Add Contact" />
+          <form th:action="'/person/edit/' + ${person.personId} + '-' + ${client.clientId}"
+                method="post">
+            <input type="submit" value="Add Client" />
           </form>
         </td>
       </tr>
