@@ -1,0 +1,72 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Client View</title>
+</head>
+<body>
+<nav>
+  <a th:href="'/'">Home Page</a>
+  <a href="/person/list">Person List</a>
+</nav>
+<h1 th:text="${person.firstName + ' ' + person.lastName}">Person View</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Email Address</th>
+    <th>Address</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td th:text="${person.emailAddress}">Email Address</td>
+    <td
+        th:text="${person.streetAddress + ' ' + person.city + ', ' + person.state + ' ' + person.zipCode}">
+      Address
+    </td>
+    <td>
+      <a href="#">Add Clients</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+<h2>Clients</h2>
+<hr>
+
+<th:block th:unless="${#lists.isEmpty(clients)}">
+  <table>
+    <thead>
+    <tr>
+      <th>Company Name</th>
+      <th>Website</th>
+      <th>Phone</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="client : ${clients}">
+      <tr>
+        <td th:text="${client.companyName}">Company Name</td>
+        <td th:text="${client.website}">Website</td>
+        <td th:text="${client.phone}">Phone</td>
+        <td>
+          <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
+          <a th:href="'/person/remove/' + ${person.personId} + '-' + ${client.clientId}">
+            Remove Client
+          </a>
+        </td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+</th:block>
+<th:block th:if="${#lists.isEmpty(clients)}">
+  <p>No clients found.</p>
+</th:block>
+</body>
+</html>

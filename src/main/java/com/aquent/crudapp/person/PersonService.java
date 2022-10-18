@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import com.aquent.crudapp.client.Client;
 import com.aquent.crudapp.interfaces.EntityDao;
 import com.aquent.crudapp.interfaces.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Qualifier("personService")
-public class PersonService implements EntityService<Person> {
+public class PersonService implements EntityService<Person, Client> {
 
     @Autowired
     @Qualifier("personDAO")
-    private final EntityDao<Person> entityDao;
-    private final Validator         validator;
+    private final EntityDao<Person, Client> entityDao;
+    private final Validator                 validator;
 
-    public PersonService(EntityDao<Person> entityDao, Validator validator) {
+    public PersonService(EntityDao<Person, Client> entityDao, Validator validator) {
         this.entityDao = entityDao;
         this.validator = validator;
     }
@@ -40,8 +41,20 @@ public class PersonService implements EntityService<Person> {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Client> getAssociations(Integer personId) {
+        return entityDao.getAssociations(personId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Person readEntity(Integer id) {
         return entityDao.readEntity(id);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Client readAssociatedEntity(Integer clientId) {
+        return entityDao.readAssociatedEntity(clientId);
     }
 
     @Override
@@ -60,6 +73,12 @@ public class PersonService implements EntityService<Person> {
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
     public void deleteEntity(Integer id) {
         entityDao.deleteEntity(id);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void removeAssociation(Integer personId, Integer clientId) {
+        entityDao.removeAssociation(personId, clientId);
     }
 
     @Override

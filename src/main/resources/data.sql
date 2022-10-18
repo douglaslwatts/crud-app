@@ -49,3 +49,14 @@ INSERT INTO client (
     'NC',
     '28801'
 );
+
+INSERT INTO client_person_associations (
+    client_id,
+    person_id
+) VALUES (
+    1,
+    1
+), (
+    2,
+    2
+);

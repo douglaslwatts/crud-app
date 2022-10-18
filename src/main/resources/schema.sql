@@ -20,11 +20,11 @@ CREATE TABLE client (
     zip_code       VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE client_associations (
-    association_id       INTEGER AUTO_INCREMENT PRIMARY KEY,
-    associated_client_id INTEGER NOT NULL,
-    associated_person_id INTEGER NOT NULL,
+CREATE TABLE client_person_associations (
+    association_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    client_id      INTEGER NOT NULL,
+    person_id      INTEGER NOT NULL,
 
-    FOREIGN KEY (associated_client_id) REFERENCES client (client_id),
-    FOREIGN KEY (associated_person_id) REFERENCES person (person_id)
+    FOREIGN KEY (client_id) REFERENCES client (client_id) ON DELETE CASCADE,
+    FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
 );

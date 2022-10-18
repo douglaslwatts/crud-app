@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * Person operations.
  */
 @Service
-public interface EntityService<E> {
+public interface EntityService<E, T> {
 
     /**
      * Retrieves all entity records.
@@ -33,6 +33,10 @@ public interface EntityService<E> {
      */
     E readEntity(Integer id);
 
+    T readAssociatedEntity(Integer entityId);
+
+    void removeAssociation(Integer entityId, Integer associationId);
+
     /**
      * Updates an existing entity record.
      *
@@ -54,4 +58,7 @@ public interface EntityService<E> {
      * @return list of error messages
      */
     List<String> validateEntity(E entity);
+
+
+    List<T> getAssociations(Integer entityId);
 }
