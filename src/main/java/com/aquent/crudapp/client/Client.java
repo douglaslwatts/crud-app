@@ -45,8 +45,6 @@ public class Client {
     @Size(min = 5, max = 10, message = "Required field zip code : maximum length 10")
     private String zipCode;
 
-    private List<Integer> contactIds = new ArrayList<>();
-
     /**
      * Get client's ID.
      *
@@ -189,15 +187,6 @@ public class Client {
      */
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }
-
-    /**
-     * Get client's list of associated person IDs
-     *
-     * @return client's list of associated person IDs
-     */
-    public List<Integer> getContactIds() {
-        return contactIds;
     }
 
 }

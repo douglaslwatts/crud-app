@@ -25,6 +25,6 @@ CREATE TABLE client_person_associations (
     client_id      INTEGER NOT NULL,
     person_id      INTEGER NOT NULL,
 
-    FOREIGN KEY (client_id) REFERENCES client (client_id),
-    FOREIGN KEY (person_id) REFERENCES person (person_id)
+    FOREIGN KEY (client_id) REFERENCES client (client_id) ON DELETE CASCADE,
+    FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
 );

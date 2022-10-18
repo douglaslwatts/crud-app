@@ -3,6 +3,7 @@ package com.aquent.crudapp.person;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aquent.crudapp.client.Client;
 import com.aquent.crudapp.interfaces.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,12 +23,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class PersonController {
 
     public static final String COMMAND_DELETE = "Delete";
+    public static final String COMMAND_REMOVE = "Remove";
 
     @Autowired
     @Qualifier("personService")
-    private final EntityService<Person> entityService;
+    private final EntityService<Person, Client> entityService;
 
-    public PersonController(EntityService<Person> entityService) {
+    public PersonController(EntityService<Person, Client> entityService) {
         this.entityService = entityService;
     }
 
@@ -47,6 +49,7 @@ public class PersonController {
     public ModelAndView viewPerson(@PathVariable Integer personId) {
         ModelAndView modelAndView = new ModelAndView("person/person-view");
         modelAndView.addObject("person", entityService.readEntity(personId));
+        modelAndView.addObject("clients", entityService.getAssociations(personId));
         return modelAndView;
     }
 
@@ -148,5 +151,22 @@ public class PersonController {
             entityService.deleteEntity(personId);
         }
         return "redirect:/person/list";
+    }
+
+    @GetMapping("remove/{personId}-{clientId}")
+    public ModelAndView remove(@PathVariable Integer personId, @PathVariable Integer clientId) {
+        ModelAndView modelAndView = new ModelAndView("person/remove");
+        modelAndView.addObject("person", entityService.readEntity(personId));
+        modelAndView.addObject("client", entityService.readAssociatedEntity(clientId));
+        return modelAndView;
+    }
+
+    @PostMapping(value = "remove/{clientId}")
+    public String remove(@RequestParam Integer personId, @PathVariable Integer clientId,
+                         @RequestParam String command) {
+        if (COMMAND_REMOVE.equals(command)) {
+            entityService.removeAssociation(personId, clientId);
+        }
+        return "redirect:/person/person-view/" + personId;
     }
 }

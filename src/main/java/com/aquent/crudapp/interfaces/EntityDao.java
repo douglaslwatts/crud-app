@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Operations on the "person" table.
  */
 @Repository
-public interface EntityDao<E> {
+public interface EntityDao<E, T> {
 
     /**
      * Retrieves all entity records.
@@ -33,6 +33,10 @@ public interface EntityDao<E> {
      */
     E readEntity(Integer id);
 
+    T readAssociatedEntity(Integer entityId);
+
+    void removeAssociation(Integer entityId, Integer associationId);
+
     /**
      * Updates an existing person record.
      *
@@ -41,9 +45,12 @@ public interface EntityDao<E> {
     void updateEntity(E entity);
 
     /**
-     * Deletes a entity record by ID.
+     * Deletes an entity record by ID.
      *
      * @param id the entity ID
      */
     void deleteEntity(Integer id);
+
+    List<T> getAssociations(Integer entityId);
+
 }

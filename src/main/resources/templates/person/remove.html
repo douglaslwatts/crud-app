@@ -1,0 +1,20 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Remove Client</title>
+</head>
+<body>
+<h1>Remove Client</h1>
+<p>You are about to remove your current association with the client
+  <th:block th:text="${client.companyName}" /> <th:block
+    th:text="${client.website}" />:  Are you sure?</p>
+<form th:action="'/person/remove' + '/' + ${client.clientId}" method="post">
+  <input type="hidden" name="personId" th:value="${person.personId}"/>
+  <input type="submit" name="command" value="Cancel"/>
+  <input type="submit" name="command" value="Remove"/>
+</form>
+</body>
+</html>

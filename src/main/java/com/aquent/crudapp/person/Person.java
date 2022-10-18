@@ -40,8 +40,6 @@ public class Person {
     @Size(min = 5, max = 5, message = "Zip code is required with length 5")
     private String zipCode;
 
-    private List<Integer> clientIds = new ArrayList<>();
-
     public Integer getPersonId() {
         return personId;
     }
@@ -106,13 +104,4 @@ public class Person {
         this.zipCode = zipCode;
     }
 
-
-    /**
-     * Get person's list of associated client IDs
-     *
-     * @return person's list of associated client IDs
-     */
-    public List<Integer> getClientIds() {
-        return clientIds;
-    }
 }

@@ -2,6 +2,7 @@ package com.aquent.crudapp.client;
 
 import com.aquent.crudapp.interfaces.EntityDao;
 import com.aquent.crudapp.interfaces.EntityService;
+import com.aquent.crudapp.person.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,15 @@ import java.util.Set;
 
 @Service
 @Qualifier("clientService")
-public class ClientService implements EntityService<Client> {
+public class ClientService implements EntityService<Client, Person> {
 
     @Autowired
     @Qualifier("clientDAO")
-    private final EntityDao<Client> entityDao;
+    private final EntityDao<Client, Person> entityDao;
 
     private final Validator validator;
 
-    public ClientService(EntityDao<Client> entityDao, Validator validator) {
+    public ClientService(EntityDao<Client, Person> entityDao, Validator validator) {
         this.entityDao = entityDao;
         this.validator = validator;
     }
@@ -39,6 +40,24 @@ public class ClientService implements EntityService<Client> {
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Client> listEntities() {
         return entityDao.listEntities();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Person> getAssociations(Integer clientId) {
+        return entityDao.getAssociations(clientId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Person readAssociatedEntity(Integer personId) {
+        return entityDao.readAssociatedEntity(personId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void removeAssociation(Integer clientId, Integer personId) {
+        entityDao.removeAssociation(clientId, personId);
     }
 
     /**
