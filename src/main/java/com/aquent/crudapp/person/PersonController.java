@@ -169,4 +169,19 @@ public class PersonController {
         }
         return "redirect:/person/person-view/" + personId;
     }
+
+    @GetMapping(value = "available-clients/{personId}")
+    public ModelAndView seeAvailable(@PathVariable Integer personId) {
+        ModelAndView modelAndView = new ModelAndView("person/available-clients");
+        modelAndView.addObject("person", entityService.readEntity(personId));
+        modelAndView.addObject("clients",
+                               entityService.getAvailableAssociations(personId));
+        return modelAndView;
+    }
+
+    @PostMapping(value = "available-clients/{clientId}")
+    public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId) {
+        entityService.addAssociation(personId, clientId);
+        return "redirect:/person/person-view/" + personId;
+    }
 }

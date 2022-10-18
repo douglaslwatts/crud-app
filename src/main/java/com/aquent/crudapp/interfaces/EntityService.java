@@ -61,4 +61,8 @@ public interface EntityService<E, T> {
 
 
     List<T> getAssociations(Integer entityId);
+
+    List<T> getAvailableAssociations(Integer entityId);
+
+    void addAssociation(Integer entityId, Integer associationId);
 }
