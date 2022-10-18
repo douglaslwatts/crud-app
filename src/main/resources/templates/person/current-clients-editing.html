@@ -7,35 +7,14 @@
   <title>Client View</title>
 </head>
 <body>
+<h2>Current Clients</h2>
 <nav>
   <a th:href="'/'">Home Page</a>
-  <a href="/person/list">Person List</a>
+  <a th:href="'/person/edit/' + ${person.personId}"
+     th:text="'Back to Editing ' + ${person.firstName} + ' ' + ${person.lastName}">
+    Back to Person
+  </a>
 </nav>
-<h1 th:text="${person.firstName + ' ' + person.lastName}">Person View</h1>
-<table>
-  <thead>
-  <tr>
-    <th>Email Address</th>
-    <th>Address</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td th:text="${person.emailAddress}">Email Address</td>
-    <td
-        th:text="${person.streetAddress + ' ' + person.city + ', ' + person.state + ' ' + person.zipCode}">
-      Address
-    </td>
-    <td>
-      <a th:href="'/person/available-clients/' + ${person.personId}">Add Clients</a>
-    </td>
-  </tr>
-  </tbody>
-</table>
-
-<br>
-<h2>Clients</h2>
 <hr>
 
 <th:block th:unless="${#lists.isEmpty(clients)}">
@@ -55,10 +34,10 @@
         <td th:text="${client.website}">Website</td>
         <td th:text="${client.phone}">Phone</td>
         <td>
-          <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
-          <a th:href="'/person/remove/' + ${person.personId} + '-' + ${client.clientId}">
-            Remove Client
-          </a>
+          <form th:action="'/person/edit/' + ${person.personId} + '-' + ${client.clientId}"
+                method="post">
+            <input type="submit" name="command" value="Remove Client" />
+          </form>
         </td>
       </tr>
     </th:block>

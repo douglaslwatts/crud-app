@@ -49,6 +49,16 @@ public class ClientService implements EntityService<Client, Person> {
     }
 
     @Override
+    public List<Person> getAvailableAssociations(Integer clientId) {
+        return entityDao.getAvailableAssociations(clientId);
+    }
+
+    @Override
+    public void addAssociation(Integer clientId, Integer personId) {
+        entityDao.addAssociation(clientId, personId);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Person readAssociatedEntity(Integer personId) {
         return entityDao.readAssociatedEntity(personId);

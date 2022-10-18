@@ -8,6 +8,9 @@
   </head>
   <body>
     <h1>Edit Person</h1>
+    <nav>
+      <a th:href="'/person/list'">Cancel Edit</a>
+    </nav>
     <th:block th:unless="${#lists.isEmpty(errors)}">
       <p>Please correct the following errors in your submission:</p>
       <ul>
@@ -41,7 +44,9 @@
       <label for="zipCode">Zip Code:</label>
       <input type="text" id="zipCode" name="zipCode" th:value="${person.zipCode}"/>
       <br/>
-      <input type="submit" name="Submit" value="Submit"/>
+      <input type="submit" name="command" value="Submit"/>
+      <input type="submit" name="command" id="AddClient" value="Add Client">
+      <input type="submit" name="command" id="removeClient" value="See/Remove Clients"/>
     </form>
   </body>
 </html>

@@ -25,64 +25,78 @@ import java.util.Properties;
 public class jdbcClientDAO implements EntityDao<Client, Person> {
 
     private static final String LIST_CLIENTS = "SELECT  client_id, " +
-                                               "company_name, " +
-                                               "website, " +
-                                               "phone, " +
-                                               "street_address, " +
-                                               "city, " +
-                                               "state, " +
-                                               "zip_code " +
+                                                       "company_name, " +
+                                                       "website, " +
+                                                       "phone, " +
+                                                       "street_address, " +
+                                                       "city, " +
+                                                       "state, " +
+                                                       "zip_code " +
                                                "FROM client " +
                                                "ORDER BY company_name, website";
 
+    private static final String LIST_AVAILABLE_CONTACTS = "SELECT  person_id, " +
+                                                                  "first_name, " +
+                                                                  "last_name, " +
+                                                                  "email_address, " +
+                                                                  "street_address, " +
+                                                                  "city, " +
+                                                                  "state, " +
+                                                                  "zip_code " +
+                                                         "FROM person " +
+                                                         "WHERE person_id NOT IN ( " +
+                                                         "SELECT person_id " +
+                                                         "FROM client_person_associations " +
+                                                         "WHERE client_id = :clientId " +
+                                                         ") " +
+                                                         "ORDER BY first_name, last_name, person_id";
+
     private static final String CREATE_CLIENT = "INSERT INTO client ( " +
-                                                "company_name, " +
-                                                "website," +
-                                                "phone," +
-                                                "street_address," +
-                                                "city," +
-                                                "state," +
-                                                "zip_code" +
-                                                ") " +
-                                                "VALUES ( " +
-                                                ":companyName, " +
-                                                ":website, " +
-                                                ":phone, " +
-                                                ":streetAddress, " +
-                                                ":city, " +
-                                                ":state, " +
-                                                ":zipCode" +
+                                                    "company_name, " +
+                                                    "website," +
+                                                    "phone," +
+                                                    "street_address," +
+                                                    "city," +
+                                                    "state," +
+                                                    "zip_code" +
+                                                ") VALUES ( " +
+                                                    ":companyName, " +
+                                                    ":website, " +
+                                                    ":phone, " +
+                                                    ":streetAddress, " +
+                                                    ":city, " +
+                                                    ":state, " +
+                                                    ":zipCode" +
                                                 ")";
 
     private static final String READ_CLIENT = "SELECT  client_id, " +
-                                              "company_name, " +
-                                              "website, " +
-                                              "phone, " +
-                                              "street_address, " +
-                                              "city, " +
-                                              "state, " +
-                                              "zip_code " +
+                                                      "company_name, " +
+                                                      "website, " +
+                                                      "phone, " +
+                                                      "street_address, " +
+                                                      "city, " +
+                                                      "state, " +
+                                                      "zip_code " +
                                               "FROM client " +
                                               "WHERE client_id = :clientId";
 
     private static final String UPDATE_CLIENT = "UPDATE client " +
                                                 "SET ( " +
-                                                "company_name, " +
-                                                "website," +
-                                                "phone," +
-                                                "street_address," +
-                                                "city," +
-                                                "state," +
-                                                "zip_code" +
-                                                ") " +
-                                                "= ( " +
-                                                ":companyName, " +
-                                                ":website, " +
-                                                ":phone, " +
-                                                ":streetAddress, " +
-                                                ":city, " +
-                                                ":state, " +
-                                                ":zipCode" +
+                                                    "company_name, " +
+                                                    "website," +
+                                                    "phone," +
+                                                    "street_address," +
+                                                    "city," +
+                                                    "state," +
+                                                    "zip_code" +
+                                                ") = ( " +
+                                                    ":companyName, " +
+                                                    ":website, " +
+                                                    ":phone, " +
+                                                    ":streetAddress, " +
+                                                    ":city, " +
+                                                    ":state, " +
+                                                    ":zipCode" +
                                                 ") " +
                                                 "WHERE client_id = :clientId";
 
@@ -92,6 +106,14 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
     private static final String REMOVE_ASSOCIATION = "DELETE FROM client_person_associations " +
                                                      "WHERE client_id = :clientId " +
                                                      "AND person_id = :personId";
+
+    private static final String ADD_ASSOCIATION = "INSERT INTO client_person_associations ( " +
+                                                      "client_id, " +
+                                                      "person_id " +
+                                                  ") VALUES ( " +
+                                                      ":clientId, " +
+                                                      ":personId " +
+                                                  ")";
 
     private static final String GET_CONTACTS = "SELECT  p.person_id, " +
                                                        "first_name, " +
@@ -131,18 +153,24 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
         MapSqlParameterSource paramMapper = new MapSqlParameterSource();
         paramMapper.addValue("clientId", clientId);
         return namedParameterJdbcTemplate.query(GET_CONTACTS, paramMapper, new PersonRowMapper());
+    }
 
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Person> getAvailableAssociations(Integer clientId) {
+        MapSqlParameterSource paramMapper = new MapSqlParameterSource();
+        paramMapper.addValue("clientId", clientId);
+        return namedParameterJdbcTemplate.query(LIST_AVAILABLE_CONTACTS, paramMapper,
+                                                new PersonRowMapper());
+    }
 
-        /* This one says something is wrong with the SQL, implies param-arg not set for :clientId */
-//        return namedParameterJdbcTemplate.getJdbcOperations().query(GET_CONTACTS,
-//                                                                    new PersonRowMapper(),
-//                                                                    clientId);
-
-
-        /* This one says something is wrong with the SQL, implies param-arg not set for :clientId */
-//        return namedParameterJdbcTemplate.getJdbcOperations().query(GET_CONTACTS,
-//                                                                    new ArgumentPreparedStatementSetter(new Integer[] {clientId}),
-//                                                                    new PersonRowMapper());
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void addAssociation(Integer clientId, Integer personId) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("personId", personId);
+        mapSqlParameterSource.addValue("clientId", clientId);
+        namedParameterJdbcTemplate.update(ADD_ASSOCIATION, mapSqlParameterSource);
     }
 
     /**
