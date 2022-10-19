@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * The person entity corresponding to the "person" table in the database.
+ *
+ * TODO: make an Entity interface for Client and Person to implement as to have the
+ *       flexibility of adding future Entity types
  */
 public class Person {
 

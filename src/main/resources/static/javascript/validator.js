@@ -1,7 +1,22 @@
+/**
+ * A script for field validation of forms for editing and creating clients and person tuples
+ */
+
+/** All forms present on the document */
 const forms = document.forms;
+
+/** A color for a field with invalid data upon submission */
 const invalidInputColor = '#AA222233';
+
+/** The milliseconds to display an error message for invalid data fields */
 const errorMessageTimeout = 4000;
 
+/**
+ * Display an error message beneath an input element for elementMessageTimeout milliseconds.
+ *
+ * @param {string} message The error message to display
+ * @param {HTMLInputElement} field The element under which to display the error message
+ */
 let displayErrorMessage = (message, field) => {
     let messageBox = document.createElement('div');
     messageBox.classList.add('errorMessage');
@@ -15,6 +30,16 @@ let displayErrorMessage = (message, field) => {
     }, errorMessageTimeout);
 };
 
+/**
+ * Check the entered value against a regex to validate user input.
+ * Display an error and color the field invalidInputColor in case of invalid user input.
+ *
+ * @param {string} textValue The value entered by the user
+ * @param {FormSubmitEvent} event The submit event for the form
+ * @param {HTMLInputElement} field The input field from the form
+ * @param {string} message An error message in case of invalid data entry
+ * @param {regex} regex A regex to check the entered data against
+ */
 const checkInputField = (textValue, event, field, message, regex) => {
     let valid = textValue.match(regex);
 
@@ -26,6 +51,12 @@ const checkInputField = (textValue, event, field, message, regex) => {
     }
 };
 
+/**
+ * Add an EventListener to all input fields of a form which returns them back to their original
+ * background color after an error has turned them invalidInputColor.
+ *
+ * @param {HTMLFormElement} form The form which all inputs should have keydown EventListeners added
+ */
 const addKeyDownListeners = (form) => {
     for (let field of form) {
         let color = field.style.backgroundColor;
@@ -35,6 +66,13 @@ const addKeyDownListeners = (form) => {
     }
 };
 
+/**
+ * Add EventListener to the form for the submit event such that user input is validated.
+ * Add an EventListener to all input fields of the form which returns them back to their original
+ * background color after an error has turned them invalidInputColor.
+ *
+ * @param {HTMLFormElement} form The form to add the listener on.
+ */
 const addEventListeners = (form) => {
     addKeyDownListeners(form);
 

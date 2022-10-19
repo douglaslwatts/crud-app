@@ -5,6 +5,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * A RowMapper for a Client object
+ * {@See} https://docs.oracle.com/javase/8/docs/api/javax/swing/tree/RowMapper.html
+ */
 public class ClientRowMapper implements RowMapper<Client> {
 
     @Override

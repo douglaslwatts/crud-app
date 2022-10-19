@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Row mapper for person records.
+ * A RowMapper for a Person object
+ * {@See} https://docs.oracle.com/javase/8/docs/api/javax/swing/tree/RowMapper.html
  */
 public class PersonRowMapper implements RowMapper<Person> {
 

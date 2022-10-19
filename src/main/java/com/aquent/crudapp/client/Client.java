@@ -2,9 +2,13 @@ package com.aquent.crudapp.client;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * A Client entity
+ *
+ * TODO: make an Entity interface for Client and Person to implement as to have the
+ *       flexibility of adding future Entity types
+ */
 public class Client {
 
     /** The id of a client */

@@ -24,6 +24,7 @@ import java.util.Properties;
 @Qualifier("clientDAO")
 public class jdbcClientDAO implements EntityDao<Client, Person> {
 
+    /** SQL for retrieving all client tuples */
     private static final String LIST_CLIENTS = "SELECT  client_id, " +
                                                        "company_name, " +
                                                        "website, " +
@@ -35,6 +36,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                "FROM client " +
                                                "ORDER BY company_name, website";
 
+    /** SQL for retrieving all person tuples which are not contacts of a given client via client ID */
     private static final String LIST_AVAILABLE_CONTACTS = "SELECT  person_id, " +
                                                                   "first_name, " +
                                                                   "last_name, " +
@@ -51,6 +53,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                          ") " +
                                                          "ORDER BY first_name, last_name, person_id";
 
+    /** SQL for creating a client tuple */
     private static final String CREATE_CLIENT = "INSERT INTO client ( " +
                                                     "company_name, " +
                                                     "website," +
@@ -69,6 +72,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                     ":zipCode" +
                                                 ")";
 
+    /** SQL for retrieving a given client tuple via client ID */
     private static final String READ_CLIENT = "SELECT  client_id, " +
                                                       "company_name, " +
                                                       "website, " +
@@ -80,6 +84,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                               "FROM client " +
                                               "WHERE client_id = :clientId";
 
+    /** SQL for updating a given client tuple via client ID */
     private static final String UPDATE_CLIENT = "UPDATE client " +
                                                 "SET ( " +
                                                     "company_name, " +
@@ -100,13 +105,18 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                 ") " +
                                                 "WHERE client_id = :clientId";
 
+    /** SQL for retrieving a given person tuple via person ID */
     private static final String READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
+
+    /** SQL for deleting a given client tuple via client ID */
     private static final String DELETE_CLIENT = "DELETE FROM client WHERE client_id = :clientId";
 
+    /** SQL for removing a new client/person association via person ID and client ID */
     private static final String REMOVE_ASSOCIATION = "DELETE FROM client_person_associations " +
                                                      "WHERE client_id = :clientId " +
                                                      "AND person_id = :personId";
 
+    /** SQL for inserting a new client/person association via person ID and client ID */
     private static final String ADD_ASSOCIATION = "INSERT INTO client_person_associations ( " +
                                                       "client_id, " +
                                                       "person_id " +
@@ -115,6 +125,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                       ":personId " +
                                                   ")";
 
+    /** SQL for getting all associated person tuples via client ID */
     private static final String GET_CONTACTS = "SELECT  p.person_id, " +
                                                        "first_name, " +
                                                        "last_name, " +
@@ -147,6 +158,12 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                                     new ClientRowMapper());
     }
 
+    /**
+     * Get a list of all entities associated with this entity via entity ID
+     *
+     * @param clientId The entity ID field of this entity
+     * @return A list of all entities associated with this entity
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Person> getAssociations(Integer clientId) {
@@ -155,6 +172,12 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
         return namedParameterJdbcTemplate.query(GET_CONTACTS, paramMapper, new PersonRowMapper());
     }
 
+    /**
+     * Get a list of all entities not associated with this entity.
+     *
+     * @param clientId The entity ID field of this entity
+     * @return A list of all entities not associated with this entity
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Person> getAvailableAssociations(Integer clientId) {
@@ -164,6 +187,12 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                 new PersonRowMapper());
     }
 
+    /**
+     * Add an association with a given entity.
+     *
+     * @param clientId The ID of this entity
+     * @param personId The ID of the entity which should be associated
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void addAssociation(Integer clientId, Integer personId) {
@@ -203,6 +232,12 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                 "clientId", clientId), new ClientRowMapper());
     }
 
+    /**
+     * Retrieve an associated entity via ID
+     *
+     * @param personId The ID of the associated entity to retrieve
+     * @return The associated entity
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Person readAssociatedEntity(Integer personId) {
@@ -210,6 +245,13 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                 "personId", personId), new PersonRowMapper());
     }
 
+    /**
+     * Remove an association with a given entity via ID
+     *
+     * @param clientId The ID of this entity
+     * @param personId The ID of the associated entity, the association with which is to be
+     *                      removed
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void removeAssociation(Integer clientId, Integer personId) {

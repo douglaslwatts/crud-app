@@ -22,8 +22,20 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("person")
 public class PersonController {
 
+    /** Command string for delete */
     public static final String COMMAND_DELETE = "Delete";
+
+    /** Command string for remove */
     public static final String COMMAND_REMOVE = "Remove";
+
+    /** Command string for remove client */
+    public static final String REMOVE_CLIENT = "Remove Client";
+
+    /** Command string for add client */
+    public static final String ADD_CLIENT = "Add Client";
+
+    /** Command string for see/remove clients */
+    public static final String SEE_REMOVE = "See/Remove Clients";
 
     @Autowired
     @Qualifier("personService")
@@ -111,9 +123,9 @@ public class PersonController {
     @PostMapping(value = "edit/{personId}-{clientId}")
     public ModelAndView edit(@PathVariable Integer personId, @PathVariable Integer clientId,
                              @RequestParam String command) {
-        if ("Add Client".equals(command)) {
+        if (ADD_CLIENT.equals(command)) {
             entityService.addAssociation(personId, clientId);
-        } else if ("Remove Client".equals(command)) {
+        } else if (REMOVE_CLIENT.equals(command)) {
             entityService.removeAssociation(personId, clientId);
         }
         ModelAndView mav = new ModelAndView("person/edit");
@@ -124,10 +136,18 @@ public class PersonController {
 
     /**
      * Validates and saves an edited person.
-     * On success, the user is redirected to the person listing page.
+     *
+     * On success, the user is redirected to either:
+     *      the available associations view, the current associations view, or the person listing
+     *      page depending of the value of the parameter "command" In any case any changed data is
+     *      saved.
+     *
      * On failure, the form is redisplayed with the validation errors.
      *
-     * @param person populated form bean for the person
+     * @param person populated form bean for the client
+     * @param command "Add Client" to render available contact view, "See/Remove Clients" to
+     *                see current contacts view, otherwise validate and redirect to client list
+     *                view"
      * @return redirect, or edit view with errors
      */
     @PostMapping(value = "edit")
@@ -135,14 +155,14 @@ public class PersonController {
         List<String> errors = entityService.validateEntity(person);
         if (errors.isEmpty()) {
             entityService.updateEntity(person);
-            if ("Add Client".equals(command)) {
+            if (ADD_CLIENT.equals(command)) {
                 ModelAndView modelAndView = new ModelAndView("person/available-clients-editing");
                 modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
                 modelAndView.addObject("clients",
                                        entityService.getAvailableAssociations(
                                                person.getPersonId()));
                 return modelAndView;
-            } else if ("See/Remove Clients".equals(command)) {
+            } else if (SEE_REMOVE.equals(command)) {
                 ModelAndView modelAndView = new ModelAndView("person/current-clients-editing");
                 modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
                 modelAndView.addObject("clients",
@@ -189,6 +209,13 @@ public class PersonController {
         return "redirect:/person/list";
     }
 
+    /**
+     * Render a view for removing an associated client.
+     *
+     * @param personId The ID of the Person contact to remove
+     * @param clientId The ID of the Client removing the contact
+     * @return The view for removing or cancelling
+     */
     @GetMapping("remove/{personId}-{clientId}")
     public ModelAndView remove(@PathVariable Integer personId, @PathVariable Integer clientId) {
         ModelAndView modelAndView = new ModelAndView("person/remove");
@@ -197,6 +224,14 @@ public class PersonController {
         return modelAndView;
     }
 
+    /**
+     * Remove an associated client association and redirect to a person individual view.
+     *
+     * @param personId The ID of the Person contact to remove an association with
+     * @param clientId The ID of the Client to redirect to the view of
+     * @param command "Remove" if they should be removed, "Cancel" if remove was cancelled
+     * @return A redirect
+     */
     @PostMapping(value = "remove/{clientId}")
     public String remove(@RequestParam Integer personId, @PathVariable Integer clientId,
                          @RequestParam String command) {
@@ -206,6 +241,12 @@ public class PersonController {
         return "redirect:/person/person-view/" + personId;
     }
 
+    /**
+     * Render the view for all available client's a person is not associated with.
+     *
+     * @param personId The ID of the Person to view available contacts for
+     * @return The view of available Person contacts
+     */
     @GetMapping(value = "available-clients/{personId}")
     public ModelAndView seeAvailable(@PathVariable Integer personId) {
         System.out.println("correct one");
@@ -216,6 +257,13 @@ public class PersonController {
         return modelAndView;
     }
 
+    /**
+     * Add an association to the person and redirect to the individual person view.
+     *
+     * @param personId The ID of the person to add as a contact
+     * @param clientId The ID of the Client
+     * @return A redirect
+     */
     @PostMapping(value = "available-clients/{clientId}")
     public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId) {
         System.out.println("incorrect one");
@@ -223,6 +271,12 @@ public class PersonController {
         return "redirect:/person/person-view/" + personId;
     }
 
+    /**
+     * Redirect to the person individual view
+     *
+     * @param personId The ID of the person
+     * @return A redirect
+     */
     @PostMapping(value = "person-view/{personId}")
     public String back(@RequestParam Integer personId) {
         return "redirect:/person/person-view/" + personId;
