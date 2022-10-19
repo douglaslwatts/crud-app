@@ -1,0 +1,36 @@
+# Editor configuration, see https://editorconfig.org and
+# https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
+
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+indent_style = space
+indent_size = 4
+quote_type = double
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+curly_bracket_next_line = false
+spaces_around_operators = true
+spaces_around_brackets = outside
+indent_brace_style = K&R
+wildcard_import_limit = 999 # never use wildcard imports
+continuation_indent_size = 8
+
+[*.{html,css,scss,json,md}]
+indent_size = 2
+continuation_indent_size = 4
+
+# [*.{js,ts,java,py,rs,toml,sh}]
+# indent_size = 4
+
+[*.{js,ts}]
+quote_type = single
+
+# [*.md]
+# trim_trailing_whitespace = true
+
+[Makefile]
+indent_style = tab

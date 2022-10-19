@@ -22,7 +22,7 @@ public class Client {
 
     /** The phone number of a client */
     @NotNull
-    @Size(min = 10, max = 20, message = "Required field phone : maximum length 20")
+    @Size(min = 10, max = 15, message = "Required field phone : maximum length 15")
     private String phone;
 
     /** The street address of a client */
@@ -42,7 +42,7 @@ public class Client {
 
     /** The zip code of a client */
     @NotNull
-    @Size(min = 5, max = 10, message = "Required field zip code : maximum length 10")
+    @Size(min = 5, max = 5, message = "Required field zip code : maximum length 5")
     private String zipCode;
 
     /**
