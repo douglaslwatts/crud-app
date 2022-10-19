@@ -1,45 +1,69 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Create Client</title>
-</head>
-<body>
-<h1>Create Client</h1>
-<th:block th:unless="${#lists.isEmpty(errors)}">
-    <p>Please correct the following errors in your submission:</p>
-    <ul>
-        <th:block th:each="error : ${errors}">
-            <li>${error}</li>
-        </th:block>
-    </ul>
-</th:block>
-<form action="/client/create" method="POST">
-    <br/>
-    <label for="companyName">Company Name:</label>
-    <input type="text" id="companyName" name="companyName" th:value="${client.companyName}"/>
-    <br/>
-    <label for="website">Website:</label>
-    <input type="text" id="website" name="website" th:value="${client.website}"/>
-    <br/>
-    <label for="phone">Phone:</label>
-    <input type="text" id="phone" name="phone" th:value="${client.phone}"/>
-    <br/>
-    <label for="streetAddress">Street Address:</label>
-    <input type="text" id="streetAddress" name="streetAddress" th:value="${client.streetAddress}"/>
-    <br/>
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" th:value="${client.city}"/>
-    <br/>
-    <label for="state">State:</label>
-    <input type="text" id="state" name="state" th:value="${client.state}"/>
-    <br/>
-    <label for="zipCode">Zip Code:</label>
-    <input type="text" id="zipCode" name="zipCode" th:value="${client.zipCode}"/>
-    <br/>
-    <input type="submit" name="Submit" value="Submit"/>
-</form>
-</body>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" />
+    <script type="text/javascript" src="/javascript/validator.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Create Client</h1>
+      <th:block th:unless="${#lists.isEmpty(errors)}">
+        <p>Please correct the following errors in your submission:</p>
+        <ul>
+          <th:block th:each="error : ${errors}">
+            <li th:text="${error}">Error</li>
+          </th:block>
+        </ul>
+      </th:block>
+      <form class="well form-horizontal" action="/client/create" method="POST">
+        <br />
+        <label class="control-label" for="companyName">Company Name:</label>
+        <div class="controls">
+          <input type="text" id="companyName" name="companyName" th:value="${client.companyName}" />
+        </div>
+        <br />
+        <label class="control-label" for="website">Website:</label>
+        <div class="controls">
+          <input type="text" id="website" name="website" th:value="${client.website}" />
+        </div>
+        <br />
+        <label class="control-label" for="phone">Phone:</label>
+        <div class="controls">
+          <input type="text" id="phone" name="phone" th:value="${client.phone}" />
+        </div>
+        <br />
+        <label class="control-label" for="streetAddress">Street Address:</label>
+        <div class="controls">
+          <input
+            type="text"
+            id="streetAddress"
+            name="streetAddress"
+            th:value="${client.streetAddress}"
+          />
+        </div>
+        <br />
+        <label class="control-label" for="city">City:</label>
+        <div class="controls">
+          <input type="text" id="city" name="city" th:value="${client.city}" />
+        </div>
+        <br />
+        <label class="control-label" for="state">State:</label>
+        <div class="controls">
+          <input type="text" id="state" name="state" th:value="${client.state}" />
+        </div>
+        <br />
+        <label class="control-label" for="zipCode">Zip Code:</label>
+        <div class="controls">
+          <input type="text" id="zipCode" name="zipCode" th:value="${client.zipCode}" />
+        </div>
+        <br />
+        <div class="form-actions">
+          <input class="btn btn-primary" type="submit" name="Submit" value="Submit" />
+        </div>
+      </form>
+    </div>
+  </body>
 </html>

@@ -1,73 +1,78 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Client View</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" />
   </head>
   <body>
-    <nav>
-      <a th:href="'/'">Home Page</a>
-      <a href="/client/list">Client List</a>
-    </nav>
-    <h1 th:text="${client.companyName}">Client View</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Website</th>
-          <th>Phone</th>
-          <th>Address</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td th:text="${client.website}">Website</td>
-        <td th:text="${client.phone}">Phone</td>
-        <td
-            th:text="${client.streetAddress + ' ' + client.city + ', ' + client.state + ' ' + client.zipCode}">
-          Phone
-        <td>
-          <a th:href="'/client/available-contacts/' + ${client.clientId}">Add Contacts</a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <br>
-    <h2>Contacts</h2>
-    <hr>
-
-    <th:block th:unless="${#lists.isEmpty(contacts)}">
-      <table>
+    <div class="container">
+      <h1 th:text="${client.companyName}">Client View</h1>
+      <nav class="nav nav-pills">
+        <a class="nav-link nav-item" th:href="'/'">Home Page</a>
+        <a class="nav-link nav-item" href="/client/list">Client List</a>
+      </nav>
+      <table class="table table-dark table-striped table-primary">
         <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email Address</th>
-          <th>Actions</th>
-        </tr>
+          <tr>
+            <th>Website</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-          <th:block th:each="contact : ${contacts}">
-            <tr>
-              <td th:text="${contact.firstName}">First Name</td>
-              <td th:text="${contact.lastName}">Last Name</td>
-              <td th:text="${contact.emailAddress}">Email Address</td>
-              <td>
-                <a th:href="'/person/person-view/' + ${contact.personId}">View Contact</a>
-                <a th:href="'/client/remove/' + ${client.clientId} + '-' + ${contact.personId}">
-                  Remove Contact
-                </a>
-              </td>
-            </tr>
-          </th:block>
+          <tr>
+            <td th:text="${client.website}">Website</td>
+            <td th:text="${client.phone}">Phone</td>
+            <td
+              th:text="${client.streetAddress + ' ' + client.city + ', ' + client.state + ' ' + client.zipCode}"
+            >
+              Phone
+            </td>
+
+            <td>
+              <a th:href="'/client/available-contacts/' + ${client.clientId}">Add Contacts</a>
+            </td>
+          </tr>
         </tbody>
       </table>
-    </th:block>
-    <th:block th:if="${#lists.isEmpty(contacts)}">
-      <p>No contacts found.</p>
-    </th:block>
+
+      <br />
+      <h2>Contacts</h2>
+      <hr />
+
+      <th:block th:unless="${#lists.isEmpty(contacts)}">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <th:block th:each="contact : ${contacts}">
+              <tr>
+                <td th:text="${contact.firstName}">First Name</td>
+                <td th:text="${contact.lastName}">Last Name</td>
+                <td th:text="${contact.emailAddress}">Email Address</td>
+                <td>
+                  <a th:href="'/person/person-view/' + ${contact.personId}">View Contact</a>
+                  <a th:href="'/client/remove/' + ${client.clientId} + '-' + ${contact.personId}">
+                    Remove Contact
+                  </a>
+                </td>
+              </tr>
+            </th:block>
+          </tbody>
+        </table>
+      </th:block>
+      <th:block th:if="${#lists.isEmpty(contacts)}">
+        <p>No contacts found.</p>
+      </th:block>
+    </div>
   </body>
 </html>

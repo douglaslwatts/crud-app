@@ -1,52 +1,86 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Edit Person</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" />
+    <script type="text/javascript" src="/javascript/validator.js" defer></script>
   </head>
   <body>
-    <h1>Edit Person</h1>
-    <nav>
-      <a th:href="'/person/list'">Cancel Edit</a>
-    </nav>
-    <th:block th:unless="${#lists.isEmpty(errors)}">
-      <p>Please correct the following errors in your submission:</p>
-      <ul>
-        <th:block th:each="error : ${errors}">
-          <li>${error}</li>
-        </th:block>
-      </ul>
-    </th:block>
-    <form action="/person/edit" method="POST">
-      <input type="hidden" name="personId" th:value="${person.personId}"/>
-      <br/>
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" name="firstName" th:value="${person.firstName}"/>
-      <br/>
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" name="lastName" th:value="${person.lastName}"/>
-      <br/>
-      <label for="emailAddress">Email Address:</label>
-      <input type="text" id="emailAddress" name="emailAddress" th:value="${person.emailAddress}"/>
-      <br/>
-      <label for="streetAddress">Street Address:</label>
-      <input type="text" id="streetAddress" name="streetAddress"
-             th:value="${person.streetAddress}"/>
-      <br/>
-      <label for="city">City:</label>
-      <input type="text" id="city" name="city" th:value="${person.city}"/>
-      <br/>
-      <label for="state">State:</label>
-      <input type="text" id="state" name="state" th:value="${person.state}"/>
-      <br/>
-      <label for="zipCode">Zip Code:</label>
-      <input type="text" id="zipCode" name="zipCode" th:value="${person.zipCode}"/>
-      <br/>
-      <input type="submit" name="command" value="Submit"/>
-      <input type="submit" name="command" id="AddClient" value="Add Client">
-      <input type="submit" name="command" id="removeClient" value="See/Remove Clients"/>
-    </form>
+    <div class="container">
+      <h1>Edit Person</h1>
+      <nav class="navbar">
+        <a class="btn" th:href="'/person/list'">Cancel Edit</a>
+      </nav>
+      <th:block th:unless="${#lists.isEmpty(errors)}">
+        <p>Please correct the following errors in your submission:</p>
+        <ul>
+          <th:block th:each="error : ${errors}">
+            <li th:text="${error}">Error</li>
+          </th:block>
+        </ul>
+      </th:block>
+      <form class="well form-horizontal" action="/person/edit" method="POST">
+        <input type="hidden" name="personId" th:value="${person.personId}" />
+        <br />
+        <label class="control-label" for="firstName">First Name:</label>
+        <div class="controls">
+          <input type="text" id="firstName" name="firstName" th:value="${person.firstName}" />
+        </div>
+        <br />
+        <label class="control-label" for="lastName">Last Name:</label>
+        <div class="controls">
+          <input type="text" id="lastName" name="lastName" th:value="${person.lastName}" />
+        </div>
+        <br />
+        <label class="control-label" for="emailAddress">Email Address:</label>
+        <div class="controls">
+          <input
+            type="text"
+            id="emailAddress"
+            name="emailAddress"
+            th:value="${person.emailAddress}"
+          />
+        </div>
+        <br />
+        <label class="control-label" for="streetAddress">Street Address:</label>
+        <div class="controls">
+          <input
+            type="text"
+            id="streetAddress"
+            name="streetAddress"
+            th:value="${person.streetAddress}"
+          />
+        </div>
+        <br />
+        <label class="control-label" for="city">City:</label>
+        <div class="controls">
+          <input type="text" id="city" name="city" th:value="${person.city}" />
+        </div>
+        <br />
+        <label class="control-label" for="state">State:</label>
+        <div class="controls">
+          <input type="text" id="state" name="state" th:value="${person.state}" />
+        </div>
+        <br />
+        <label class="control-label" for="zipCode">Zip Code:</label>
+        <div class="controls">
+          <input type="text" id="zipCode" name="zipCode" th:value="${person.zipCode}" />
+        </div>
+        <br />
+        <div class="form-actions">
+          <input class="btn" type="submit" name="command" id="AddClient" value="Add Client" />
+          <input
+            class="btn"
+            type="submit"
+            name="command"
+            id="removeClient"
+            value="See/Remove Clients"
+          />
+          <input class="btn btn-primary" type="submit" name="command" value="Submit" />
+        </div>
+      </form>
+    </div>
   </body>
 </html>

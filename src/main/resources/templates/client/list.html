@@ -1,45 +1,47 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Client Listing</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" />
   </head>
   <body>
-  <h1>Client Listing</h1>
-  <nav>
-    <a th:href="'/'">Home Page</a>
-    <a href="/client/create">Create New Client</a>
-  </nav>
-  <th:block th:unless="${#lists.isEmpty(clients)}">
-    <table>
-      <thead>
-      <tr>
-        <th>Company Name</th>
-        <th>Website</th>
-        <th>Phone</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <th:block th:each="client : ${clients}">
-        <tr>
-          <td th:text="${client.companyName}">Company</td>
-          <td th:text="${client.website}">Website</td>
-          <td th:text="${client.phone}">(999) 999-9999</td>
-          <td>
-            <a th:href="'/client/edit/' + ${client.clientId}">Edit Client</a>
-            <a th:href="'/client/delete/' + ${client.clientId}">Delete Client</a>
-            <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
-          </td>
-        </tr>
+    <div class="container">
+      <h1>Client Listing</h1>
+      <nav class="nav nav-pills">
+        <a class="nav-link nav-item" th:href="'/'">Home Page</a>
+        <a class="nav-link nav-item" href="/client/create">Create New Client</a>
+      </nav>
+      <th:block th:unless="${#lists.isEmpty(clients)}">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Website</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <th:block th:each="client : ${clients}">
+              <tr>
+                <td th:text="${client.companyName}">Company</td>
+                <td th:text="${client.website}">Website</td>
+                <td th:text="${client.phone}">(999) 999-9999</td>
+                <td>
+                  <a th:href="'/client/edit/' + ${client.clientId}">Edit Client</a>
+                  <a th:href="'/client/delete/' + ${client.clientId}">Delete Client</a>
+                  <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
+                </td>
+              </tr>
+            </th:block>
+          </tbody>
+        </table>
       </th:block>
-      </tbody>
-    </table>
-  </th:block>
-  <th:block th:if="${#lists.isEmpty(clients)}">
-    <p>No results found.</p>
-  </th:block>
+      <th:block th:if="${#lists.isEmpty(clients)}">
+        <p>No results found.</p>
+      </th:block>
+    </div>
   </body>
 </html>
