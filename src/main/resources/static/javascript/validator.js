@@ -116,7 +116,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Street address name must be between 1 and 50 characters, inclusive',
-                        /^[0-9]+[\.a-zA-Z0-9 -]{1,50}$/
+                        /^(?=[0-9]+[\.a-zA-Z0-9 -]{1,50}$)[0-9]+[\.a-zA-Z0-9 -]/
                     );
                     break;
                 case field.getAttribute('id') === 'city':
