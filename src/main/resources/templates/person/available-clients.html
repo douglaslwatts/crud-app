@@ -11,13 +11,24 @@
       <h1>Available Clients</h1>
       <nav class="nav nav-pills">
         <a class="nav-link nav-item" th:href="'/'">Home Page</a>
-        <a
-          class="btn nav-link nav-item"
-          th:href="'/person/person-view/' + ${person.personId}"
-          th:text="'Back to ' + ${person.firstName} + ' ' + ${person.lastName}"
-        >
-          Back to Person
-        </a>
+        <th:block th:if="${referrer} == 'edit'">
+          <a
+              class="btn nav-link nav-item"
+              th:href="'/person/edit/' + ${person.personId}"
+              th:text="'Back to editing ' + ${person.firstName} + ' ' + ${person.lastName}"
+          >
+            Back to editing Person
+          </a>
+        </th:block>
+        <th:block th:if="${referrer} == 'view'">
+          <a
+              class="btn nav-link nav-item"
+              th:href="'/person/person-view/' + ${person.personId}"
+              th:text="'Back to ' + ${person.firstName} + ' ' + ${person.lastName}"
+          >
+            Back to Person
+          </a>
+        </th:block>
       </nav>
       <th:block th:unless="${#lists.isEmpty(clients)}">
         <table class="table table-dark table-striped">
@@ -38,6 +49,7 @@
                 <td>
                   <form th:action="'/person/available-clients/' + ${client.clientId}" method="post">
                     <input type="hidden" name="personId" th:value="${person.personId}" />
+                    <input type="hidden" name="referrer" th:value="${referrer}" />
                     <input type="submit" value="Add Client" />
                   </form>
                 </td>
