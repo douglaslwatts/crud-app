@@ -37,6 +37,13 @@ public class PersonController {
     /** Command string for see/remove clients */
     public static final String SEE_REMOVE = "See/Remove Clients";
 
+    /** A string to represent client edit as referrer when hitting available/current contacts */
+    public static final String EDIT_REFERRER = "edit";
+
+    /** A string to represent client view as referrer when hitting available/current contacts */
+
+    public static final String VIEW_REFERRER = "view";
+
     @Autowired
     @Qualifier("personService")
     private final EntityService<Person, Client> entityService;
@@ -139,7 +146,7 @@ public class PersonController {
      *
      * On success, the user is redirected to either:
      *      the available associations view, the current associations view, or the person listing
-     *      page depending of the value of the parameter "command" In any case any changed data is
+     *      page depending on the value of the parameter "command" In any case any changed data is
      *      saved.
      *
      * On failure, the form is redisplayed with the validation errors.
@@ -156,11 +163,12 @@ public class PersonController {
         if (errors.isEmpty()) {
             entityService.updateEntity(person);
             if (ADD_CLIENT.equals(command)) {
-                ModelAndView modelAndView = new ModelAndView("person/available-clients-editing");
+                ModelAndView modelAndView = new ModelAndView("person/available-clients");
                 modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
                 modelAndView.addObject("clients",
                                        entityService.getAvailableAssociations(
                                                person.getPersonId()));
+                modelAndView.addObject("referrer", EDIT_REFERRER);
                 return modelAndView;
             } else if (SEE_REMOVE.equals(command)) {
                 ModelAndView modelAndView = new ModelAndView("person/current-clients-editing");
@@ -168,6 +176,7 @@ public class PersonController {
                 modelAndView.addObject("clients",
                                        entityService.getAssociations(
                                                person.getPersonId()));
+                modelAndView.addObject("referrer", EDIT_REFERRER);
                 return modelAndView;
             } else {
                 return new ModelAndView("redirect:/person/list");
@@ -249,11 +258,11 @@ public class PersonController {
      */
     @GetMapping(value = "available-clients/{personId}")
     public ModelAndView seeAvailable(@PathVariable Integer personId) {
-        System.out.println("correct one");
         ModelAndView modelAndView = new ModelAndView("person/available-clients");
         modelAndView.addObject("person", entityService.readEntity(personId));
         modelAndView.addObject("clients",
                                entityService.getAvailableAssociations(personId));
+        modelAndView.addObject("referrer", VIEW_REFERRER);
         return modelAndView;
     }
 
@@ -265,10 +274,12 @@ public class PersonController {
      * @return A redirect
      */
     @PostMapping(value = "available-clients/{clientId}")
-    public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId) {
-        System.out.println("incorrect one");
+    public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId,
+                               @RequestParam String referrer) {
         entityService.addAssociation(personId, clientId);
-        return "redirect:/person/person-view/" + personId;
+        return referrer.equalsIgnoreCase(EDIT_REFERRER) ?
+               "redirect:/person/edit/" + personId :
+               "redirect:/person/person-view/" + personId;
     }
 
     /**

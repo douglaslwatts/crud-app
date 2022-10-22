@@ -37,6 +37,13 @@ public class ClientController {
     /** Command string for see/remove contacts */
     public static final String SEE_REMOVE = "See/Remove Contacts";
 
+    /** A string to represent client edit as referrer when hitting available/current contacts */
+    public static final String EDIT_REFERRER = "edit";
+
+    /** A string to represent client view as referrer when hitting available/current contacts */
+
+    public static final String VIEW_REFERRER = "view";
+
     @Autowired
     @Qualifier("clientService")
     private final EntityService<Client, Person> entityService;
@@ -152,7 +159,7 @@ public class ClientController {
      *
      * On success, the user is redirected to either:
      *      the available contacts view, the current contacts view, or the client listing page
-     * depending of the value of the parameter "command" In any case any changed data is saved.
+     * depending on the value of the parameter "command" In any case any changed data is saved.
      *
      * On failure, the form is redisplayed with the validation errors.
      *
@@ -169,17 +176,19 @@ public class ClientController {
 
         if (errors.isEmpty()) {
             entityService.updateEntity(client);
-            if (ADD_CONTACT.equals(command)) {
-                modelAndView = new ModelAndView("client/available-contacts-editing");
+            if (ADD_CONTACT.equalsIgnoreCase(command)) {
+                modelAndView = new ModelAndView("client/available-contacts");
                 modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAvailableAssociations(
                                                client.getClientId()));
-            } else if (SEE_REMOVE.equals(command)) {
+                modelAndView.addObject("referrer", EDIT_REFERRER);
+            } else if (SEE_REMOVE.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/current-contacts-editing");
                 modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAssociations(client.getClientId()));
+                modelAndView.addObject("referrer", EDIT_REFERRER);
             } else {
                 modelAndView = new ModelAndView("redirect:/client/list");
             }
@@ -266,6 +275,7 @@ public class ClientController {
         modelAndView.addObject("client", entityService.readEntity(clientId));
         modelAndView.addObject("contacts",
                                entityService.getAvailableAssociations(clientId));
+        modelAndView.addObject("referrer", VIEW_REFERRER);
         return modelAndView;
     }
 
@@ -277,9 +287,12 @@ public class ClientController {
      * @return A redirect
      */
     @PostMapping(value = "available-contacts/{personId}")
-    public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId) {
+    public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId,
+                               @RequestParam String referrer) {
         entityService.addAssociation(clientId, personId);
-        return "redirect:/client/client-view/" + clientId;
+        return referrer.equalsIgnoreCase(EDIT_REFERRER) ?
+               "redirect:/client/edit/" + clientId :
+               "redirect:/client/client-view/" + clientId;
     }
 
     /**
