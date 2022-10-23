@@ -107,7 +107,7 @@ const addEventListeners = (form) => {
 
                         /* https://regexpattern.com/email-address/ */
 
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        /^(?!.{50,})(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
                     break;
                 case field.getAttribute('id') === 'streetAddress':
@@ -116,7 +116,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Street address name must be between 1 and 50 characters, inclusive',
-                        /^(?=[0-9]+[\.a-zA-Z0-9 -]{1,50}$)[0-9]+[\.a-zA-Z0-9 -]/
+                        /^(?!.{50,}$)[0-9]+[\.a-zA-Z0-9 -]/
                     );
                     break;
                 case field.getAttribute('id') === 'city':
@@ -161,7 +161,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Please enter a valid URL!',
-                        /^[\/:a-zA-Z0-9-\.]+\.[a-zA-Z0-9-\.]+[a-zA-Z-]{2,}[a-zA-Z0-9-\+\?\=]*$/
+                        /^(?!.{100,}$)[\/:a-zA-Z0-9-\.]+\.[a-zA-Z0-9-\.]+[a-zA-Z-]{2,}[a-zA-Z0-9-\+\?\=]*/
                     );
                     break;
                 case field.getAttribute('id') === 'phone':
@@ -170,7 +170,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Please enter a valid 10 digit phone number!',
-                        /^[\(]*[0-9]{3}[\)]*[ -]*[0-9]{3}[ -]*[0-9]{4}$/
+                        /^[\(]{0,1}[0-9]{3}[\)]{0,1}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/
                     );
                     break;
                 default:
