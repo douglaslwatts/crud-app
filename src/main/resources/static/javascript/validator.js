@@ -20,14 +20,17 @@ const errorMessageTimeout = 4000;
 let displayErrorMessage = (message, field) => {
     let messageBox = document.createElement('div');
     messageBox.classList.add('errorMessage');
+    messageBox.classList.add(`errorMessage${field.getAttribute('id')}`);
     messageBox.style.backgroundColor = invalidInputColor;
     messageBox.innerHTML = message;
 
-    field.parentNode.insertBefore(messageBox, field.nextSibling);
+    let id = field.getAttribute('id');
 
-    setTimeout(() => {
-        messageBox.parentNode.removeChild(messageBox);
-    }, errorMessageTimeout);
+    /* Only add the error message if one is not already there for the input field */
+
+    if (document.querySelector(`.errorMessage${id}`) === null) {
+        field.parentNode.insertBefore(messageBox, field.nextSibling);
+    }
 };
 
 /**
@@ -51,7 +54,7 @@ const checkInputField = (textValue, event, field, message, regex) => {
     }
 };
 
-/**
+/**(
  * Add an EventListener to all input fields of a form which returns them back to their original
  * background color after an error has turned them invalidInputColor.
  *
@@ -62,6 +65,15 @@ const addKeyDownListeners = (form) => {
         let color = field.style.backgroundColor;
         field.addEventListener('keydown', (event) => {
             field.style.backgroundColor = color;
+
+            let id = field.getAttribute('id');
+            let messageBox = document.querySelector(`.errorMessage${id}`);
+
+            /* remove the error message from the input field if there is one */
+
+            if (messageBox !== null) {
+                field.parentNode.removeChild(messageBox);
+            }
         });
     }
 };
