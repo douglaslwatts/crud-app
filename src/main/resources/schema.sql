@@ -1,5 +1,5 @@
 CREATE TABLE person (
-    person_id integer PRIMARY KEY AUTO_INCREMENT,
+    entity_id integer PRIMARY KEY AUTO_INCREMENT,
     first_name varchar(50) NOT NULL,
     last_name varchar(50) NOT NULL,
     email_address varchar(50) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE person (
 );
 
 CREATE TABLE client (
-    client_id      INTEGER     AUTO_INCREMENT PRIMARY KEY,
+    entity_id      INTEGER     AUTO_INCREMENT PRIMARY KEY,
     company_name   VARCHAR(100) NOT NULL,
     website        VARCHAR(255) NOT NULL,
     phone          VARCHAR(20) NOT NULL,
@@ -25,6 +25,6 @@ CREATE TABLE client_person_associations (
     client_id      INTEGER NOT NULL,
     person_id      INTEGER NOT NULL,
 
-    FOREIGN KEY (client_id) REFERENCES client (client_id) ON DELETE CASCADE,
-    FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
+    FOREIGN KEY (client_id) REFERENCES client (entity_id) ON DELETE CASCADE,
+    FOREIGN KEY (person_id) REFERENCES person (entity_id) ON DELETE CASCADE
 );

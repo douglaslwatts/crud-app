@@ -64,11 +64,11 @@ public class PersonController {
         return mav;
     }
 
-    @GetMapping(value = "person-view/{personId}")
-    public ModelAndView viewPerson(@PathVariable Integer personId) {
+    @GetMapping(value = "person-view/{entityId}")
+    public ModelAndView viewPerson(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("person/person-view");
-        modelAndView.addObject("person", entityService.readEntity(personId));
-        modelAndView.addObject("clients", entityService.getAssociations(personId));
+        modelAndView.addObject("person", entityService.readEntity(entityId));
+        modelAndView.addObject("clients", entityService.getAssociations(entityId));
         return modelAndView;
     }
 
@@ -110,13 +110,13 @@ public class PersonController {
     /**
      * Renders an edit form for an existing person record.
      *
-     * @param personId the ID of the person to edit
+     * @param entityId the ID of the person to edit
      * @return edit view populated from the person record
      */
-    @GetMapping(value = "edit/{personId}")
-    public ModelAndView edit(@PathVariable Integer personId) {
+    @GetMapping(value = "edit/{entityId}")
+    public ModelAndView edit(@PathVariable Integer entityId) {
         ModelAndView mav = new ModelAndView("person/edit");
-        mav.addObject("person", entityService.readEntity(personId));
+        mav.addObject("person", entityService.readEntity(entityId));
         mav.addObject("errors", new ArrayList<String>());
         return mav;
     }
@@ -124,19 +124,19 @@ public class PersonController {
     /**
      * Renders an edit form for an existing person record.
      *
-     * @param personId the ID of the person to edit
+     * @param entityId the ID of the person to edit
      * @return edit view populated from the person record
      */
-    @PostMapping(value = "edit/{personId}-{clientId}")
-    public ModelAndView edit(@PathVariable Integer personId, @PathVariable Integer clientId,
+    @PostMapping(value = "edit/{entityId}-{associatedEntityId}")
+    public ModelAndView edit(@PathVariable Integer entityId, @PathVariable Integer associatedEntityId,
                              @RequestParam String command) {
         if (ADD_CLIENT.equals(command)) {
-            entityService.addAssociation(personId, clientId);
+            entityService.addAssociation(entityId, associatedEntityId);
         } else if (REMOVE_CLIENT.equals(command)) {
-            entityService.removeAssociation(personId, clientId);
+            entityService.removeAssociation(entityId, associatedEntityId);
         }
         ModelAndView mav = new ModelAndView("person/edit");
-        mav.addObject("person", entityService.readEntity(personId));
+        mav.addObject("person", entityService.readEntity(entityId));
         mav.addObject("errors", new ArrayList<String>());
         return mav;
     }
@@ -192,13 +192,13 @@ public class PersonController {
     /**
      * Renders the deletion confirmation page.
      *
-     * @param personId the ID of the person to be deleted
+     * @param entityId the ID of the person to be deleted
      * @return delete view populated from the person record
      */
-    @GetMapping(value = "delete/{personId}")
-    public ModelAndView delete(@PathVariable Integer personId) {
+    @GetMapping(value = "delete/{entityId}")
+    public ModelAndView delete(@PathVariable Integer entityId) {
         ModelAndView mav = new ModelAndView("person/delete");
-        mav.addObject("person", entityService.readEntity(personId));
+        mav.addObject("person", entityService.readEntity(entityId));
         return mav;
     }
 
@@ -207,13 +207,13 @@ public class PersonController {
      * case.
      *
      * @param command the command field from the form
-     * @param personId the ID of the person to be deleted
+     * @param entityId the ID of the person to be deleted
      * @return redirect to the person listing page
      */
     @PostMapping(value = "delete")
-    public String delete(@RequestParam String command, @RequestParam Integer personId) {
+    public String delete(@RequestParam String command, @RequestParam Integer entityId) {
         if (COMMAND_DELETE.equals(command)) {
-            entityService.deleteEntity(personId);
+            entityService.deleteEntity(entityId);
         }
         return "redirect:/person/list";
     }
@@ -221,47 +221,47 @@ public class PersonController {
     /**
      * Render a view for removing an associated client.
      *
-     * @param personId The ID of the Person contact to remove
-     * @param clientId The ID of the Client removing the contact
+     * @param entityId The ID of the Person contact to remove
+     * @param associatedEntityId The ID of the Client removing the contact
      * @return The view for removing or cancelling
      */
-    @GetMapping("remove/{personId}-{clientId}")
-    public ModelAndView remove(@PathVariable Integer personId, @PathVariable Integer clientId) {
+    @GetMapping("remove/{entityId}-{associatedEntityId}")
+    public ModelAndView remove(@PathVariable Integer entityId, @PathVariable Integer associatedEntityId) {
         ModelAndView modelAndView = new ModelAndView("person/remove");
-        modelAndView.addObject("person", entityService.readEntity(personId));
-        modelAndView.addObject("client", entityService.readAssociatedEntity(clientId));
+        modelAndView.addObject("person", entityService.readEntity(entityId));
+        modelAndView.addObject("client", entityService.readAssociatedEntity(associatedEntityId));
         return modelAndView;
     }
 
     /**
      * Remove an associated client association and redirect to a person individual view.
      *
-     * @param personId The ID of the Person contact to remove an association with
-     * @param clientId The ID of the Client to redirect to the view of
+     * @param entityId The ID of the Person contact to remove an association with
+     * @param associatedEntityId The ID of the Client to redirect to the view of
      * @param command "Remove" if they should be removed, "Cancel" if remove was cancelled
      * @return A redirect
      */
-    @PostMapping(value = "remove/{clientId}")
-    public String remove(@RequestParam Integer personId, @PathVariable Integer clientId,
+    @PostMapping(value = "remove/{associatedEntityId}")
+    public String remove(@RequestParam Integer entityId, @PathVariable Integer associatedEntityId,
                          @RequestParam String command) {
         if (COMMAND_REMOVE.equals(command)) {
-            entityService.removeAssociation(personId, clientId);
+            entityService.removeAssociation(entityId, associatedEntityId);
         }
-        return "redirect:/person/person-view/" + personId;
+        return "redirect:/person/person-view/" + entityId;
     }
 
     /**
      * Render the view for all available client's a person is not associated with.
      *
-     * @param personId The ID of the Person to view available contacts for
+     * @param entityId The ID of the Person to view available contacts for
      * @return The view of available Person contacts
      */
-    @GetMapping(value = "available-clients/{personId}")
-    public ModelAndView seeAvailable(@PathVariable Integer personId) {
+    @GetMapping(value = "available-clients/{entityId}")
+    public ModelAndView seeAvailable(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("person/available-clients");
-        modelAndView.addObject("person", entityService.readEntity(personId));
+        modelAndView.addObject("person", entityService.readEntity(entityId));
         modelAndView.addObject("clients",
-                               entityService.getAvailableAssociations(personId));
+                               entityService.getAvailableAssociations(entityId));
         modelAndView.addObject("referrer", VIEW_REFERRER);
         return modelAndView;
     }
@@ -269,28 +269,28 @@ public class PersonController {
     /**
      * Add an association to the person and redirect to the individual person view.
      *
-     * @param personId The ID of the person to add as a contact
-     * @param clientId The ID of the Client
+     * @param entityId The ID of the person to add as a contact
+     * @param associatedEntityId The ID of the Client
      * @return A redirect
      */
-    @PostMapping(value = "available-clients/{clientId}")
-    public String addAvailable(@RequestParam Integer personId, @PathVariable Integer clientId,
+    @PostMapping(value = "available-clients/{associatedEntityId}")
+    public String addAvailable(@RequestParam Integer entityId, @PathVariable Integer associatedEntityId,
                                @RequestParam String referrer) {
-        entityService.addAssociation(personId, clientId);
+        entityService.addAssociation(entityId, associatedEntityId);
         return referrer.equalsIgnoreCase(EDIT_REFERRER) ?
-               "redirect:/person/edit/" + personId :
-               "redirect:/person/person-view/" + personId;
+               "redirect:/person/edit/" + entityId :
+               "redirect:/person/person-view/" + entityId;
     }
 
     /**
      * Redirect to the person individual view
      *
-     * @param personId The ID of the person
+     * @param entityId The ID of the person
      * @return A redirect
      */
-    @PostMapping(value = "person-view/{personId}")
-    public String back(@RequestParam Integer personId) {
-        return "redirect:/person/person-view/" + personId;
+    @PostMapping(value = "person-view/{entityId}")
+    public String back(@RequestParam Integer entityId) {
+        return "redirect:/person/person-view/" + entityId;
     }
 
 }

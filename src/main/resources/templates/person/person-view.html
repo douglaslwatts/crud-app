@@ -30,7 +30,7 @@
               Address
             </td>
             <td>
-              <a th:href="'/person/available-clients/' + ${person.personId}">Add Clients</a>
+              <a th:href="'/person/available-clients/' + ${person.entityId}">Add Clients</a>
             </td>
           </tr>
         </tbody>
@@ -57,8 +57,8 @@
                 <td th:text="${client.website}">Website</td>
                 <td th:text="${client.phone}">Phone</td>
                 <td>
-                  <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
-                  <a th:href="'/person/remove/' + ${person.personId} + '-' + ${client.clientId}">
+                  <a th:href="'/client/client-view/' + ${client.entityId}">View Client</a>
+                  <a th:href="'/person/remove/' + ${person.entityId} + '-' + ${client.entityId}">
                     Remove Client
                   </a>
                 </td>

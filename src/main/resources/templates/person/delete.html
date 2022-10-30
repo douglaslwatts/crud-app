@@ -16,7 +16,7 @@
         </p>
       </div>
       <form class="well" action="/person/delete" method="post">
-        <input type="hidden" name="personId" th:value="${person.personId}" />
+        <input type="hidden" name="entityId" th:value="${person.entityId}" />
         <input class="btn" type="submit" name="command" value="Cancel" />
         <input class="btn btn-primary" type="submit" name="command" value="Delete" />
       </form>

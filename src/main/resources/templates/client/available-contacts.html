@@ -14,7 +14,7 @@
         <th:block th:if="${referrer} == 'edit'">
           <a
               class="btn nav-link nav-item"
-              th:href="'/client/edit/' + ${client.clientId}"
+              th:href="'/client/edit/' + ${client.entityId}"
               th:text="'Back to editing ' + ${client.companyName}"
           >
             Back to editing Client
@@ -23,7 +23,7 @@
         <th:block th:if="${referrer} == 'view'">
         <a
           class="btn nav-link nav-item"
-          th:href="'/client/client-view/' + ${client.clientId}"
+          th:href="'/client/client-view/' + ${client.entityId}"
           th:text="'Back to ' + ${client.companyName}"
         >
           Back to Client
@@ -48,10 +48,10 @@
                 <td th:text="${contact.emailAddress}">first.last@email.com</td>
                 <td>
                   <form
-                    th:action="'/client/available-contacts/' + ${contact.personId}"
+                    th:action="'/client/available-contacts/' + ${contact.entityId}"
                     method="post"
                   >
-                    <input type="hidden" name="clientId" th:value="${client.clientId}" />
+                    <input type="hidden" name="entityId" th:value="${client.entityId}" />
                     <input type="hidden" name="referrer" th:value="${referrer}" />
                     <input type="submit" value="Add Contact" />
                   </form>

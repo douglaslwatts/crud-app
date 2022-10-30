@@ -16,9 +16,9 @@
           you sure?
         </p>
       </div>
-      <form class="well" th:action="'/person/remove' + '/' + ${client.clientId}" method="post">
+      <form class="well" th:action="'/person/remove' + '/' + ${client.entityId}" method="post">
         <div class="form-controls">
-          <input type="hidden" name="personId" th:value="${person.personId}" />
+          <input type="hidden" name="entityId" th:value="${person.entityId}" />
           <input class="btn" type="submit" name="command" value="Cancel" />
           <input class="btn btn-primary" type="submit" name="command" value="Remove" />
         </div>

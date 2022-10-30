@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcPersonDAO implements EntityDao<Person, Client> {
 
     /** SQL for retrieving all person tuples */
-    private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, person_id";
+    private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, entity_id";
 
     /** SQL for retrieving all client tuples which are not contacts of a given person via person ID */
-    private static final String LIST_AVAILABLE_CLIENTS = "SELECT  client_id, " +
+    private static final String LIST_AVAILABLE_CLIENTS = "SELECT  entity_id, " +
                                                                  "company_name, " +
                                                                  "website, " +
                                                                  "phone, " +
@@ -36,7 +36,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
                                                                  "state, " +
                                                                  "zip_code " +
                                                          "FROM client " +
-                                                         "WHERE client_id NOT IN ( " +
+                                                         "WHERE entity_id NOT IN ( " +
                                                             "SELECT client_id " +
                                                             "FROM client_person_associations " +
                                                             "WHERE person_id = :personId " +
@@ -44,13 +44,13 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
                                                          "ORDER BY company_name, website";
 
     /** SQL for retrieving a given person tuple via person ID */
-    private static final String SQL_READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
+    private static final String SQL_READ_PERSON = "SELECT * FROM person WHERE entity_id = :personId";
 
     /** SQL for retrieving a given client tuple via client ID */
-    private static final String READ_CLIENT = "SELECT * FROM client WHERE client_id = :clientId";
+    private static final String READ_CLIENT = "SELECT * FROM client WHERE entity_id = :clientId";
 
     /** SQL for deleting a given person tuple via person ID */
-    private static final String SQL_DELETE_PERSON = "DELETE FROM person WHERE person_id = :personId";
+    private static final String SQL_DELETE_PERSON = "DELETE FROM person WHERE entity_id = :personId";
 
     /** SQL for removing a new client/person association via person ID and client ID */
     private static final String REMOVE_ASSOCIATION = "DELETE FROM client_person_associations " +
@@ -68,13 +68,13 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     /** SQL for updating a given person tuple via person ID */
     private static final String SQL_UPDATE_PERSON = "UPDATE person SET (first_name, last_name, email_address, street_address, city, state, zip_code)"
                                                   + " = (:firstName, :lastName, :emailAddress, :streetAddress, :city, :state, :zipCode)"
-                                                  + " WHERE person_id = :personId";
+                                                  + " WHERE entity_id = :entityId";
     /** SQL for creating a person tuple */
     private static final String SQL_CREATE_PERSON = "INSERT INTO person (first_name, last_name, email_address, street_address, city, state, zip_code)"
                                                   + " VALUES (:firstName, :lastName, :emailAddress, :streetAddress, :city, :state, :zipCode)";
 
     /** SQL for getting all associated client tuples via person ID */
-    private static final String GET_CLIENTS = "SELECT  c.client_id, " +
+    private static final String GET_CLIENTS = "SELECT  c.entity_id, " +
                                                       "company_name, " +
                                                       "website, " +
                                                       "phone, " +
@@ -83,9 +83,9 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
                                                       "c.state, " +
                                                       "c.zip_code " +
                                                "FROM person p JOIN client_person_associations cpa" +
-                                               " ON p.person_id = cpa.person_id " +
+                                               " ON p.entity_id = cpa.person_id " +
                                                "JOIN client c " +
-                                               "ON cpa.client_id = c.client_id " +
+                                               "ON cpa.client_id = c.entity_id " +
                                                "WHERE cpa.person_id = :personId";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -106,10 +106,10 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     }
 
     /**
-     * Get a list of all entities associated with this entity via entity ID
+     * Get a list of all entities associated with the entity via entity ID
      *
-     * @param personId The entity ID field of this entity
-     * @return A list of all entities associated with this entity
+     * @param personId The entity ID field of the entity
+     * @return A list of all entities associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -120,10 +120,10 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     }
 
     /**
-     * Get a list of all entities not associated with this entity.
+     * Get a list of all entities not associated with the entity.
      *
-     * @param personId The entity ID field of this entity
-     * @return A list of all entities not associated with this entity
+     * @param personId The entity ID field of the entity
+     * @return A list of all entities not associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -138,7 +138,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
      * Add an association with a given entity.
      *
      * @param personId The ID of the entity which should be associated
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -180,7 +180,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
      *
      * @param personId The ID of the associated entity, the association with which is to be
      *                      removed
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)

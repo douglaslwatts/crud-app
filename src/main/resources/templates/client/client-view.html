@@ -33,7 +33,7 @@
             </td>
 
             <td>
-              <a th:href="'/client/available-contacts/' + ${client.clientId}">Add Contacts</a>
+              <a th:href="'/client/available-contacts/' + ${client.entityId}">Add Contacts</a>
             </td>
           </tr>
         </tbody>
@@ -60,8 +60,8 @@
                 <td th:text="${contact.lastName}">Last Name</td>
                 <td th:text="${contact.emailAddress}">Email Address</td>
                 <td>
-                  <a th:href="'/person/person-view/' + ${contact.personId}">View Contact</a>
-                  <a th:href="'/client/remove/' + ${client.clientId} + '-' + ${contact.personId}">
+                  <a th:href="'/person/person-view/' + ${contact.entityId}">View Contact</a>
+                  <a th:href="'/client/remove/' + ${client.entityId} + '-' + ${contact.entityId}">
                     Remove Contact
                   </a>
                 </td>
