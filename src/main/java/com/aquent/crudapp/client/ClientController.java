@@ -178,16 +178,16 @@ public class ClientController {
             entityService.updateEntity(client);
             if (ADD_CONTACT.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/available-contacts");
-                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("client", entityService.readEntity(client.getEntityId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAvailableAssociations(
-                                               client.getClientId()));
+                                               client.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
             } else if (SEE_REMOVE.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/current-contacts-editing");
-                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("client", entityService.readEntity(client.getEntityId()));
                 modelAndView.addObject("contacts",
-                                       entityService.getAssociations(client.getClientId()));
+                                       entityService.getAssociations(client.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
             } else {
                 modelAndView = new ModelAndView("redirect:/client/list");

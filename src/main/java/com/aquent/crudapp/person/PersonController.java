@@ -164,18 +164,18 @@ public class PersonController {
             entityService.updateEntity(person);
             if (ADD_CLIENT.equals(command)) {
                 ModelAndView modelAndView = new ModelAndView("person/available-clients");
-                modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
+                modelAndView.addObject("person", entityService.readEntity(person.getEntityId()));
                 modelAndView.addObject("clients",
                                        entityService.getAvailableAssociations(
-                                               person.getPersonId()));
+                                               person.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
                 return modelAndView;
             } else if (SEE_REMOVE.equals(command)) {
                 ModelAndView modelAndView = new ModelAndView("person/current-clients-editing");
-                modelAndView.addObject("person", entityService.readEntity(person.getPersonId()));
+                modelAndView.addObject("person", entityService.readEntity(person.getEntityId()));
                 modelAndView.addObject("clients",
                                        entityService.getAssociations(
-                                               person.getPersonId()));
+                                               person.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
                 return modelAndView;
             } else {

@@ -1,9 +1,9 @@
 package com.aquent.crudapp.person;
 
+import com.aquent.crudapp.abstracts.EntityAbstract;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The person entity corresponding to the "person" table in the database.
@@ -11,9 +11,7 @@ import java.util.List;
  * TODO: make an Entity interface for Client and Person to implement as to have the
  *       flexibility of adding future Entity types
  */
-public class Person {
-
-    private Integer personId;
+public class Person extends EntityAbstract {
 
     @NotNull
     @Size(min = 1, max = 50, message = "First name is required with maximum length of 50")
@@ -26,30 +24,6 @@ public class Person {
     @NotNull
     @Size(min = 1, max = 50, message = "Email address is required with maximum length of 50")
     private String emailAddress;
-
-    @NotNull
-    @Size(min = 1, max = 50, message = "Street address is required with maximum length of 50")
-    private String streetAddress;
-
-    @NotNull
-    @Size(min = 1, max = 50, message = "City is required with maximum length of 50")
-    private String city;
-
-    @NotNull
-    @Size(min = 2, max = 2, message = "State is required with length 2")
-    private String state;
-
-    @NotNull
-    @Size(min = 5, max = 5, message = "Zip code is required with length 5")
-    private String zipCode;
-
-    public Integer getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(Integer personId) {
-        this.personId = personId;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -73,38 +47,6 @@ public class Person {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
 }
