@@ -1,5 +1,6 @@
-package com.aquent.crudapp.model.person;
+package com.aquent.crudapp.data_access;
 
+import com.aquent.crudapp.model.Person;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
