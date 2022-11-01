@@ -30,9 +30,9 @@
                 <td th:text="${client.website}">Website</td>
                 <td th:text="${client.phone}">(999) 999-9999</td>
                 <td>
-                  <a th:href="'/client/edit/' + ${client.clientId}">Edit Client</a>
-                  <a th:href="'/client/delete/' + ${client.clientId}">Delete Client</a>
-                  <a th:href="'/client/client-view/' + ${client.clientId}">View Client</a>
+                  <a th:href="'/client/edit/' + ${client.entityId}">Edit Client</a>
+                  <a th:href="'/client/delete/' + ${client.entityId}">Delete Client</a>
+                  <a th:href="'/client/client-view/' + ${client.entityId}">View Client</a>
                 </td>
               </tr>
             </th:block>

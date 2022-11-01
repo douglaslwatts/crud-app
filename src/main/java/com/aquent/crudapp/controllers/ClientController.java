@@ -1,7 +1,8 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.controllers;
 
+import com.aquent.crudapp.model.client.Client;
 import com.aquent.crudapp.interfaces.EntityService;
-import com.aquent.crudapp.person.Person;
+import com.aquent.crudapp.model.person.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -109,27 +110,27 @@ public class ClientController {
     /**
      * Render the view for an individual client.
      *
-     * @param clientId The ID of the Client to be viewed
+     * @param entityId The ID of the Client to be viewed
      * @return The Client view
      */
-    @GetMapping(value = "client-view/{clientId}")
-    public ModelAndView viewClient(@PathVariable Integer clientId) {
+    @GetMapping(value = "client-view/{entityId}")
+    public ModelAndView viewClient(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("client/client-view");
-        modelAndView.addObject("client", entityService.readEntity(clientId));
-        modelAndView.addObject("contacts", entityService.getAssociations(clientId));
+        modelAndView.addObject("client", entityService.readEntity(entityId));
+        modelAndView.addObject("contacts", entityService.getAssociations(entityId));
         return modelAndView;
     }
 
     /**
      * Renders an edit form for an existing client record.
      *
-     * @param clientId the ID of the client to edit
+     * @param entityId the ID of the client to edit
      * @return edit view populated from the client record
      */
-    @GetMapping(value = "edit/{clientId}")
-    public ModelAndView edit(@PathVariable Integer clientId) {
+    @GetMapping(value = "edit/{entityId}")
+    public ModelAndView edit(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("client/edit");
-        modelAndView.addObject("client", entityService.readEntity(clientId));
+        modelAndView.addObject("client", entityService.readEntity(entityId));
         modelAndView.addObject("errors", new ArrayList<String>());
         return modelAndView;
     }
@@ -137,19 +138,19 @@ public class ClientController {
     /**
      * Renders an edit form for an existing person record.
      *
-     * @param personId the ID of the person to edit
+     * @param associatedEntityId the ID of the person to edit
      * @return edit view populated from the person record
      */
-    @PostMapping(value = "edit/{clientId}-{personId}")
-    public ModelAndView edit(@PathVariable Integer clientId, @PathVariable Integer personId,
+    @PostMapping(value = "edit/{entityId}-{associatedEntityId}")
+    public ModelAndView edit(@PathVariable Integer entityId, @PathVariable Integer associatedEntityId,
                              @RequestParam String command) {
         if (ADD_CONTACT.equals(command)) {
-            entityService.addAssociation(clientId, personId);
+            entityService.addAssociation(entityId, associatedEntityId);
         } else if (REMOVE_CONTACT.equals(command)) {
-            entityService.removeAssociation(clientId, personId);
+            entityService.removeAssociation(entityId, associatedEntityId);
         }
         ModelAndView mav = new ModelAndView("client/edit");
-        mav.addObject("client", entityService.readEntity(clientId));
+        mav.addObject("client", entityService.readEntity(entityId));
         mav.addObject("errors", new ArrayList<String>());
         return mav;
     }
@@ -178,16 +179,16 @@ public class ClientController {
             entityService.updateEntity(client);
             if (ADD_CONTACT.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/available-contacts");
-                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("client", entityService.readEntity(client.getEntityId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAvailableAssociations(
-                                               client.getClientId()));
+                                               client.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
             } else if (SEE_REMOVE.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/current-contacts-editing");
-                modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
+                modelAndView.addObject("client", entityService.readEntity(client.getEntityId()));
                 modelAndView.addObject("contacts",
-                                       entityService.getAssociations(client.getClientId()));
+                                       entityService.getAssociations(client.getEntityId()));
                 modelAndView.addObject("referrer", EDIT_REFERRER);
             } else {
                 modelAndView = new ModelAndView("redirect:/client/list");
@@ -204,13 +205,13 @@ public class ClientController {
     /**
      * Renders the deletion confirmation page.
      *
-     * @param clientId the ID of the client to be deleted
+     * @param entityId the ID of the client to be deleted
      * @return delete view populated from the client record
      */
-    @GetMapping(value = "delete/{clientId}")
-    public ModelAndView delete(@PathVariable Integer clientId) {
+    @GetMapping(value = "delete/{entityId}")
+    public ModelAndView delete(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("client/delete");
-        modelAndView.addObject("client", entityService.readEntity(clientId));
+        modelAndView.addObject("client", entityService.readEntity(entityId));
         return modelAndView;
     }
 
@@ -219,13 +220,13 @@ public class ClientController {
      * case.
      *
      * @param command the command field from the form
-     * @param clientId the ID of the client to be deleted
+     * @param entityId the ID of the client to be deleted
      * @return redirect to the client listing page
      */
    @PostMapping(value = "delete")
-   public String delete(@RequestParam String command, @RequestParam Integer clientId) {
+   public String delete(@RequestParam String command, @RequestParam Integer entityId) {
         if (COMMAND_DELETE.equals(command)) {
-            entityService.deleteEntity(clientId);
+            entityService.deleteEntity(entityId);
         }
 
         return "redirect:/client/list";
@@ -234,47 +235,47 @@ public class ClientController {
     /**
      * Render a view for removing an associated Person contact.
      *
-     * @param clientId The ID of the Client removing the contact
-     * @param personId The ID of the Person contact to remove
+     * @param entityId The ID of the Client removing the contact
+     * @param associatedEntityId The ID of the Person contact to remove
      * @return The view for removing or cancelling
      */
-    @GetMapping("remove/{clientId}-{personId}")
-    public ModelAndView remove(@PathVariable Integer clientId, @PathVariable Integer personId) {
+    @GetMapping("remove/{entityId}-{associatedEntityId}")
+    public ModelAndView remove(@PathVariable Integer entityId, @PathVariable Integer associatedEntityId) {
         ModelAndView modelAndView = new ModelAndView("client/remove");
-        modelAndView.addObject("client", entityService.readEntity(clientId));
-        modelAndView.addObject("person", entityService.readAssociatedEntity(personId));
+        modelAndView.addObject("client", entityService.readEntity(entityId));
+        modelAndView.addObject("person", entityService.readAssociatedEntity(associatedEntityId));
         return modelAndView;
     }
 
     /**
      * Remove an associated Person contact and redirect to a Client individual view.
      *
-     * @param clientId The ID of the Client to redirect to the view of
-     * @param personId The ID of the Person contact to remove an association with
+     * @param entityId The ID of the Client to redirect to the view of
+     * @param associatedEntityId The ID of the Person contact to remove an association with
      * @param command "Remove" if they should be removed, "Cancel" if remove was cancelled
      * @return A redirect
      */
-    @PostMapping(value = "remove/{personId}")
-    public String remove(@RequestParam Integer clientId, @PathVariable Integer personId,
+    @PostMapping(value = "remove/{associatedEntityId}")
+    public String remove(@RequestParam Integer entityId, @PathVariable Integer associatedEntityId,
                          @RequestParam String command) {
         if (COMMAND_REMOVE.equals(command)) {
-            entityService.removeAssociation(clientId, personId);
+            entityService.removeAssociation(entityId, associatedEntityId);
         }
-        return "redirect:/client/client-view/" + clientId;
+        return "redirect:/client/client-view/" + entityId;
     }
 
     /**
      * Render the view for all available Person's a Client is not associated with.
      *
-     * @param clientId The ID of the Client to view available contacts for
+     * @param entityId The ID of the Client to view available contacts for
      * @return The view of available Person contacts
      */
-    @GetMapping(value = "available-contacts/{clientId}")
-    public ModelAndView seeAvailable(@PathVariable Integer clientId) {
+    @GetMapping(value = "available-contacts/{entityId}")
+    public ModelAndView seeAvailable(@PathVariable Integer entityId) {
         ModelAndView modelAndView = new ModelAndView("client/available-contacts");
-        modelAndView.addObject("client", entityService.readEntity(clientId));
+        modelAndView.addObject("client", entityService.readEntity(entityId));
         modelAndView.addObject("contacts",
-                               entityService.getAvailableAssociations(clientId));
+                               entityService.getAvailableAssociations(entityId));
         modelAndView.addObject("referrer", VIEW_REFERRER);
         return modelAndView;
     }
@@ -282,28 +283,28 @@ public class ClientController {
     /**
      * Add an association to the Client and redirect to the individual Client view.
      *
-     * @param clientId The ID of the Client
-     * @param personId The ID of the person to add as a contact
+     * @param entityId The ID of the Client
+     * @param associatedEntityId The ID of the person to add as a contact
      * @return A redirect
      */
-    @PostMapping(value = "available-contacts/{personId}")
-    public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId,
+    @PostMapping(value = "available-contacts/{associatedEntityId}")
+    public String addAvailable(@RequestParam Integer entityId, @PathVariable Integer associatedEntityId,
                                @RequestParam String referrer) {
-        entityService.addAssociation(clientId, personId);
+        entityService.addAssociation(entityId, associatedEntityId);
         return referrer.equalsIgnoreCase(EDIT_REFERRER) ?
-               "redirect:/client/edit/" + clientId :
-               "redirect:/client/client-view/" + clientId;
+               "redirect:/client/edit/" + entityId :
+               "redirect:/client/client-view/" + entityId;
     }
 
     /**
      * Redirect to the client individual view
      *
-     * @param clientId The ID of the client
+     * @param entityId The ID of the client
      * @return A redirect
      */
-    @PostMapping(value = "client-view/{clientId}")
-    public String back(@RequestParam Integer clientId) {
-        return "redirect:/client/client-view/" + clientId;
+    @PostMapping(value = "client-view/{entityId}")
+    public String back(@RequestParam Integer entityId) {
+        return "redirect:/client/client-view/" + entityId;
     }
 
 }

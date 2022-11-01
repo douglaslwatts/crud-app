@@ -13,7 +13,7 @@
         <a class="nav-link nav-item" th:href="'/'">Home Page</a>
         <a
           class="btn nav-link nav-item"
-          th:href="'/person/edit/' + ${person.personId}"
+          th:href="'/person/edit/' + ${person.entityId}"
           th:text="'Back to Editing ' + ${person.firstName} + ' ' + ${person.lastName}"
         >
           Back to Person
@@ -39,7 +39,7 @@
                 <td th:text="${client.phone}">Phone</td>
                 <td>
                   <form
-                    th:action="'/person/edit/' + ${person.personId} + '-' + ${client.clientId}"
+                    th:action="'/person/edit/' + ${person.entityId} + '-' + ${client.entityId}"
                     method="post"
                   >
                     <input

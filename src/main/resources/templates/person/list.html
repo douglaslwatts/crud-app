@@ -30,9 +30,9 @@
                 <td th:text="${person.lastName}">Last</td>
                 <td th:text="${person.emailAddress}">first.last@email.com</td>
                 <td>
-                  <a th:href="'/person/edit/' + ${person.personId}">Edit Person</a>
-                  <a th:href="'/person/delete/' + ${person.personId}">Delete Person</a>
-                  <a th:href="'/person/person-view/' + ${person.personId}">View Person</a>
+                  <a th:href="'/person/edit/' + ${person.entityId}">Edit Person</a>
+                  <a th:href="'/person/delete/' + ${person.entityId}">Delete Person</a>
+                  <a th:href="'/person/person-view/' + ${person.entityId}">View Person</a>
                 </td>
               </tr>
             </th:block>

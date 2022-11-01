@@ -1,11 +1,13 @@
-package com.aquent.crudapp.person;
+package com.aquent.crudapp.data_access;
 
 import java.util.Collections;
 import java.util.List;
 
-import com.aquent.crudapp.client.Client;
-import com.aquent.crudapp.client.ClientRowMapper;
+import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.client.ClientRowMapper;
 import com.aquent.crudapp.interfaces.EntityDao;
+import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.person.PersonRowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,7 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcPersonDAO implements EntityDao<Person, Client> {
 
     /** SQL for retrieving all person tuples */
-    private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, last_name, person_id";
+    private static final String SQL_LIST_PEOPLE = "SELECT * FROM person ORDER BY first_name, " +
+                                                  "last_name, person_id";
 
     /** SQL for retrieving all client tuples which are not contacts of a given person via person ID */
     private static final String LIST_AVAILABLE_CLIENTS = "SELECT  client_id, " +
@@ -68,7 +71,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     /** SQL for updating a given person tuple via person ID */
     private static final String SQL_UPDATE_PERSON = "UPDATE person SET (first_name, last_name, email_address, street_address, city, state, zip_code)"
                                                   + " = (:firstName, :lastName, :emailAddress, :streetAddress, :city, :state, :zipCode)"
-                                                  + " WHERE person_id = :personId";
+                                                  + " WHERE person_id = :entityId";
     /** SQL for creating a person tuple */
     private static final String SQL_CREATE_PERSON = "INSERT INTO person (first_name, last_name, email_address, street_address, city, state, zip_code)"
                                                   + " VALUES (:firstName, :lastName, :emailAddress, :streetAddress, :city, :state, :zipCode)";
@@ -106,10 +109,10 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     }
 
     /**
-     * Get a list of all entities associated with this entity via entity ID
+     * Get a list of all entities associated with the entity via entity ID
      *
-     * @param personId The entity ID field of this entity
-     * @return A list of all entities associated with this entity
+     * @param personId The entity ID field of the entity
+     * @return A list of all entities associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -120,10 +123,10 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
     }
 
     /**
-     * Get a list of all entities not associated with this entity.
+     * Get a list of all entities not associated with the entity.
      *
-     * @param personId The entity ID field of this entity
-     * @return A list of all entities not associated with this entity
+     * @param personId The entity ID field of the entity
+     * @return A list of all entities not associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -138,7 +141,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
      * Add an association with a given entity.
      *
      * @param personId The ID of the entity which should be associated
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -180,7 +183,7 @@ public class JdbcPersonDAO implements EntityDao<Person, Client> {
      *
      * @param personId The ID of the associated entity, the association with which is to be
      *                      removed
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)

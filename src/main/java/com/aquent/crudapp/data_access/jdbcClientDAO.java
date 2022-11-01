@@ -1,11 +1,11 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.data_access;
 
+import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.client.ClientRowMapper;
 import com.aquent.crudapp.interfaces.EntityDao;
-import com.aquent.crudapp.person.Person;
-import com.aquent.crudapp.person.PersonRowMapper;
+import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.person.PersonRowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,10 +15,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 @Repository
 @Qualifier("clientDAO")
@@ -103,7 +101,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                     ":state, " +
                                                     ":zipCode" +
                                                 ") " +
-                                                "WHERE client_id = :clientId";
+                                                "WHERE client_id = :entityId";
 
     /** SQL for retrieving a given person tuple via person ID */
     private static final String READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
@@ -159,10 +157,10 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
     }
 
     /**
-     * Get a list of all entities associated with this entity via entity ID
+     * Get a list of all entities associated with the entity via entity ID
      *
-     * @param clientId The entity ID field of this entity
-     * @return A list of all entities associated with this entity
+     * @param clientId The entity ID field of the entity
+     * @return A list of all entities associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -173,10 +171,10 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
     }
 
     /**
-     * Get a list of all entities not associated with this entity.
+     * Get a list of all entities not associated with the entity.
      *
-     * @param clientId The entity ID field of this entity
-     * @return A list of all entities not associated with this entity
+     * @param clientId The entity ID field of the entity
+     * @return A list of all entities not associated with the entity
      */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -190,7 +188,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
     /**
      * Add an association with a given entity.
      *
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      * @param personId The ID of the entity which should be associated
      */
     @Override
@@ -248,7 +246,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
     /**
      * Remove an association with a given entity via ID
      *
-     * @param clientId The ID of this entity
+     * @param clientId The ID of the entity
      * @param personId The ID of the associated entity, the association with which is to be
      *                      removed
      */
