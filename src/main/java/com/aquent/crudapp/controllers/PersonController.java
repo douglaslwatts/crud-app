@@ -3,9 +3,9 @@ package com.aquent.crudapp.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.Client;
 import com.aquent.crudapp.interfaces.EntityService;
-import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

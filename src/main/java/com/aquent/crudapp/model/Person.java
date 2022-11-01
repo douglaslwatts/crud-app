@@ -1,4 +1,4 @@
-package com.aquent.crudapp.model.person;
+package com.aquent.crudapp.model;
 
 import com.aquent.crudapp.model.AbstractEntityWithAddress;
 
