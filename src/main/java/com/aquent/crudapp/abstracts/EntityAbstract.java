@@ -6,7 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class EntityAbstract implements Entity {
+
     private Integer entityId;
+
     @NotNull
     @Size(min = 1, max = 50, message = "Street address is required with maximum length of 50")
     private String streetAddress;
