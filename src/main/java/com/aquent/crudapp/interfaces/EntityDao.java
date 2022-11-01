@@ -33,8 +33,21 @@ public interface EntityDao<E, T> {
      */
     E readEntity(Integer id);
 
+    /**
+     * Retrieve an associated entity via ID
+     *
+     * @param entityId The ID of the associated entity to retrieve
+     * @return The associated entity
+     */
     T readAssociatedEntity(Integer entityId);
 
+    /**
+     * Remove an association with a given entity via ID
+     *
+     * @param entityId The ID of this entity
+     * @param associationId The ID of the associated entity, the association with which is to be
+     *                      removed
+     */
     void removeAssociation(Integer entityId, Integer associationId);
 
     /**
@@ -51,10 +64,28 @@ public interface EntityDao<E, T> {
      */
     void deleteEntity(Integer id);
 
+    /**
+     * Get a list of all entities associated with this entity via entity ID
+     *
+     * @param entityId The entity ID field of this entity
+     * @return A list of all entities associated with this entity
+     */
     List<T> getAssociations(Integer entityId);
 
+    /**
+     * Get a list of all entities not associated with this entity.
+     *
+     * @param entityId The entity ID field of this entity
+     * @return A list of all entities not associated with this entity
+     */
     List<T> getAvailableAssociations(Integer entityId);
 
+    /**
+     * Add an association with a given entity.
+     *
+     * @param entityId The ID of this entity
+     * @param associationId The ID of the entity which should be associated
+     */
     void addAssociation(Integer entityId, Integer associationId);
 
 }

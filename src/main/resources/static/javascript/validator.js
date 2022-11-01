@@ -1,20 +1,48 @@
+/**
+ * A script for field validation of forms for editing and creating clients and person tuples
+ */
+
+/** All forms present on the document */
 const forms = document.forms;
+
+/** A color for a field with invalid data upon submission */
 const invalidInputColor = '#AA222233';
+
+/** The milliseconds to display an error message for invalid data fields */
 const errorMessageTimeout = 4000;
 
+/**
+ * Display an error message beneath an input element for elementMessageTimeout milliseconds.
+ *
+ * @param {string} message The error message to display
+ * @param {HTMLInputElement} field The element under which to display the error message
+ */
 let displayErrorMessage = (message, field) => {
     let messageBox = document.createElement('div');
     messageBox.classList.add('errorMessage');
+    messageBox.classList.add(`errorMessage${field.getAttribute('id')}`);
     messageBox.style.backgroundColor = invalidInputColor;
     messageBox.innerHTML = message;
 
-    field.parentNode.insertBefore(messageBox, field.nextSibling);
+    let id = field.getAttribute('id');
 
-    setTimeout(() => {
-        messageBox.parentNode.removeChild(messageBox);
-    }, errorMessageTimeout);
+    /* Only add the error message if one is not already there for the input field */
+
+    if (document.querySelector(`.errorMessage${id}`) === null) {
+        field.parentNode.insertBefore(messageBox, field.nextSibling);
+    }
 };
 
+/**
+ * Check the entered value against a regex to validate user input.
+ * Display an error and color the field invalidInputColor in case of invalid user input.
+ *
+ * @param {string} textValue The value entered by the user
+ * @param {FormSubmitEvent} event The submit event for the form
+ * @param {HTMLInputElement} field The input field from the form
+ * @param {string} message An error message in case of invalid data entry
+ * @param {regex} regex A regex to check the entered data against
+ */
 const checkInputField = (textValue, event, field, message, regex) => {
     let valid = textValue.match(regex);
 
@@ -26,15 +54,37 @@ const checkInputField = (textValue, event, field, message, regex) => {
     }
 };
 
+/**(
+ * Add an EventListener to all input fields of a form which returns them back to their original
+ * background color after an error has turned them invalidInputColor.
+ *
+ * @param {HTMLFormElement} form The form which all inputs should have keydown EventListeners added
+ */
 const addKeyDownListeners = (form) => {
     for (let field of form) {
         let color = field.style.backgroundColor;
         field.addEventListener('keydown', (event) => {
             field.style.backgroundColor = color;
+
+            let id = field.getAttribute('id');
+            let messageBox = document.querySelector(`.errorMessage${id}`);
+
+            /* remove the error message from the input field if there is one */
+
+            if (messageBox !== null) {
+                field.parentNode.removeChild(messageBox);
+            }
         });
     }
 };
 
+/**
+ * Add EventListener to the form for the submit event such that user input is validated.
+ * Add an EventListener to all input fields of the form which returns them back to their original
+ * background color after an error has turned them invalidInputColor.
+ *
+ * @param {HTMLFormElement} form The form to add the listener on.
+ */
 const addEventListeners = (form) => {
     addKeyDownListeners(form);
 
@@ -69,7 +119,7 @@ const addEventListeners = (form) => {
 
                         /* https://regexpattern.com/email-address/ */
 
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        /^(?!.{50,}$)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
                     break;
                 case field.getAttribute('id') === 'streetAddress':
@@ -78,7 +128,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Street address name must be between 1 and 50 characters, inclusive',
-                        /^[0-9]+[\.a-zA-Z0-9 -]{1,50}$/
+                        /^(?!.{50,}$)[0-9]+[\.a-zA-Z0-9 -]/
                     );
                     break;
                 case field.getAttribute('id') === 'city':
@@ -123,7 +173,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Please enter a valid URL!',
-                        /^[\/:a-zA-Z0-9-\.]+\.[a-zA-Z0-9-\.]+[a-zA-Z-]{2,}[a-zA-Z0-9-\+\?\=]*$/
+                        /^(?!.{100,}$)[\/:a-zA-Z0-9-\.]+\.[a-zA-Z0-9-\.]+[a-zA-Z-]{2,}[a-zA-Z0-9-\+\?\=]*/
                     );
                     break;
                 case field.getAttribute('id') === 'phone':
@@ -132,7 +182,7 @@ const addEventListeners = (form) => {
                         event,
                         field,
                         'Error! Please enter a valid 10 digit phone number!',
-                        /^[\(]*[0-9]{3}[\)]*[ -]*[0-9]{3}[ -]*[0-9]{4}$/
+                        /^[\(]{0,1}[0-9]{3}[\)]{0,1}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/
                     );
                     break;
                 default:

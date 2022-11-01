@@ -42,28 +42,59 @@ public class ClientService implements EntityService<Client, Person> {
         return entityDao.listEntities();
     }
 
+    /**
+     * Get a list of all entities associated with this entity via entity ID
+     *
+     * @param clientId The entity ID field of this entity
+     * @return A list of all entities associated with this entity
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Person> getAssociations(Integer clientId) {
         return entityDao.getAssociations(clientId);
     }
 
+    /**
+     * Get a list of all entities not associated with this entity.
+     *
+     * @param clientId The entity ID field of this entity
+     * @return A list of all entities not associated with this entity
+     */
     @Override
     public List<Person> getAvailableAssociations(Integer clientId) {
         return entityDao.getAvailableAssociations(clientId);
     }
 
+    /**
+     * Add an association with a given entity.
+     *
+     * @param clientId The ID of this entity
+     * @param personId The ID of the entity which should be associated
+     */
     @Override
     public void addAssociation(Integer clientId, Integer personId) {
         entityDao.addAssociation(clientId, personId);
     }
 
+    /**
+     * Retrieve an associated entity via ID
+     *
+     * @param personId The ID of the associated entity to retrieve
+     * @return The associated entity
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Person readAssociatedEntity(Integer personId) {
         return entityDao.readAssociatedEntity(personId);
     }
 
+    /**
+     * Remove an association with a given entity via ID
+     *
+     * @param clientId The ID of this entity
+     * @param personId The ID of the associated entity, the association with which is to be
+     *                      removed
+     */
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void removeAssociation(Integer clientId, Integer personId) {

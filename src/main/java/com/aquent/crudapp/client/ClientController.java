@@ -22,8 +22,27 @@ import java.util.List;
 @RequestMapping("client")
 public class ClientController {
 
+    /** Command string for delete */
     public static final String COMMAND_DELETE = "Delete";
+
+    /** Command string for remove */
     public static final String COMMAND_REMOVE = "Remove";
+
+    /** Command string for remove contact */
+    public static final String REMOVE_CONTACT = "Remove Contact";
+
+    /** Command string for add contact */
+    public static final String ADD_CONTACT = "Add Contact";
+
+    /** Command string for see/remove contacts */
+    public static final String SEE_REMOVE = "See/Remove Contacts";
+
+    /** A string to represent client edit as referrer when hitting available/current contacts */
+    public static final String EDIT_REFERRER = "edit";
+
+    /** A string to represent client view as referrer when hitting available/current contacts */
+
+    public static final String VIEW_REFERRER = "view";
 
     @Autowired
     @Qualifier("clientService")
@@ -87,6 +106,12 @@ public class ClientController {
         return modelAndView;
     }
 
+    /**
+     * Render the view for an individual client.
+     *
+     * @param clientId The ID of the Client to be viewed
+     * @return The Client view
+     */
     @GetMapping(value = "client-view/{clientId}")
     public ModelAndView viewClient(@PathVariable Integer clientId) {
         ModelAndView modelAndView = new ModelAndView("client/client-view");
@@ -118,9 +143,9 @@ public class ClientController {
     @PostMapping(value = "edit/{clientId}-{personId}")
     public ModelAndView edit(@PathVariable Integer clientId, @PathVariable Integer personId,
                              @RequestParam String command) {
-        if ("Add Contact".equals(command)) {
+        if (ADD_CONTACT.equals(command)) {
             entityService.addAssociation(clientId, personId);
-        } else if ("Remove Contact".equals(command)) {
+        } else if (REMOVE_CONTACT.equals(command)) {
             entityService.removeAssociation(clientId, personId);
         }
         ModelAndView mav = new ModelAndView("client/edit");
@@ -131,10 +156,17 @@ public class ClientController {
 
     /**
      * Validates and saves an edited client.
-     * On success, the user is redirected to the client listing page.
+     *
+     * On success, the user is redirected to either:
+     *      the available contacts view, the current contacts view, or the client listing page
+     * depending on the value of the parameter "command" In any case any changed data is saved.
+     *
      * On failure, the form is redisplayed with the validation errors.
      *
      * @param client populated form bean for the client
+     * @param command "Add Contact" to render available contact view, "See/Remove Contacts" to
+     *                see current contacts view, otherwise validate and redirect to client list
+     *                view"
      * @return redirect, or edit view with errors
      */
     @PostMapping(value = "edit")
@@ -144,17 +176,19 @@ public class ClientController {
 
         if (errors.isEmpty()) {
             entityService.updateEntity(client);
-            if ("Add Contact".equals(command)) {
-                modelAndView = new ModelAndView("client/available-contacts-editing");
+            if (ADD_CONTACT.equalsIgnoreCase(command)) {
+                modelAndView = new ModelAndView("client/available-contacts");
                 modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAvailableAssociations(
                                                client.getClientId()));
-            } else if ("See/Remove Contacts".equals(command)) {
+                modelAndView.addObject("referrer", EDIT_REFERRER);
+            } else if (SEE_REMOVE.equalsIgnoreCase(command)) {
                 modelAndView = new ModelAndView("client/current-contacts-editing");
                 modelAndView.addObject("client", entityService.readEntity(client.getClientId()));
                 modelAndView.addObject("contacts",
                                        entityService.getAssociations(client.getClientId()));
+                modelAndView.addObject("referrer", EDIT_REFERRER);
             } else {
                 modelAndView = new ModelAndView("redirect:/client/list");
             }
@@ -197,6 +231,13 @@ public class ClientController {
         return "redirect:/client/list";
    }
 
+    /**
+     * Render a view for removing an associated Person contact.
+     *
+     * @param clientId The ID of the Client removing the contact
+     * @param personId The ID of the Person contact to remove
+     * @return The view for removing or cancelling
+     */
     @GetMapping("remove/{clientId}-{personId}")
     public ModelAndView remove(@PathVariable Integer clientId, @PathVariable Integer personId) {
         ModelAndView modelAndView = new ModelAndView("client/remove");
@@ -205,6 +246,14 @@ public class ClientController {
         return modelAndView;
     }
 
+    /**
+     * Remove an associated Person contact and redirect to a Client individual view.
+     *
+     * @param clientId The ID of the Client to redirect to the view of
+     * @param personId The ID of the Person contact to remove an association with
+     * @param command "Remove" if they should be removed, "Cancel" if remove was cancelled
+     * @return A redirect
+     */
     @PostMapping(value = "remove/{personId}")
     public String remove(@RequestParam Integer clientId, @PathVariable Integer personId,
                          @RequestParam String command) {
@@ -214,21 +263,44 @@ public class ClientController {
         return "redirect:/client/client-view/" + clientId;
     }
 
+    /**
+     * Render the view for all available Person's a Client is not associated with.
+     *
+     * @param clientId The ID of the Client to view available contacts for
+     * @return The view of available Person contacts
+     */
     @GetMapping(value = "available-contacts/{clientId}")
     public ModelAndView seeAvailable(@PathVariable Integer clientId) {
         ModelAndView modelAndView = new ModelAndView("client/available-contacts");
         modelAndView.addObject("client", entityService.readEntity(clientId));
         modelAndView.addObject("contacts",
                                entityService.getAvailableAssociations(clientId));
+        modelAndView.addObject("referrer", VIEW_REFERRER);
         return modelAndView;
     }
 
+    /**
+     * Add an association to the Client and redirect to the individual Client view.
+     *
+     * @param clientId The ID of the Client
+     * @param personId The ID of the person to add as a contact
+     * @return A redirect
+     */
     @PostMapping(value = "available-contacts/{personId}")
-    public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId) {
+    public String addAvailable(@RequestParam Integer clientId, @PathVariable Integer personId,
+                               @RequestParam String referrer) {
         entityService.addAssociation(clientId, personId);
-        return "redirect:/client/client-view/" + clientId;
+        return referrer.equalsIgnoreCase(EDIT_REFERRER) ?
+               "redirect:/client/edit/" + clientId :
+               "redirect:/client/client-view/" + clientId;
     }
 
+    /**
+     * Redirect to the client individual view
+     *
+     * @param clientId The ID of the client
+     * @return A redirect
+     */
     @PostMapping(value = "client-view/{clientId}")
     public String back(@RequestParam Integer clientId) {
         return "redirect:/client/client-view/" + clientId;

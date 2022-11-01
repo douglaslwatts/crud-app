@@ -11,6 +11,16 @@
       <h1>Available Contacts</h1>
       <nav class="nav nav-pills">
         <a class="nav-link nav-item" th:href="'/'">Home Page</a>
+        <th:block th:if="${referrer} == 'edit'">
+          <a
+              class="btn nav-link nav-item"
+              th:href="'/client/edit/' + ${client.clientId}"
+              th:text="'Back to editing ' + ${client.companyName}"
+          >
+            Back to editing Client
+          </a>
+        </th:block>
+        <th:block th:if="${referrer} == 'view'">
         <a
           class="btn nav-link nav-item"
           th:href="'/client/client-view/' + ${client.clientId}"
@@ -18,6 +28,7 @@
         >
           Back to Client
         </a>
+        </th:block>
       </nav>
       <th:block th:unless="${#lists.isEmpty(contacts)}">
         <table class="table table-dark table-striped">
@@ -41,6 +52,7 @@
                     method="post"
                   >
                     <input type="hidden" name="clientId" th:value="${client.clientId}" />
+                    <input type="hidden" name="referrer" th:value="${referrer}" />
                     <input type="submit" value="Add Contact" />
                   </form>
                 </td>
