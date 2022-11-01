@@ -1,11 +1,11 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.data_access;
 
+import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.client.ClientRowMapper;
 import com.aquent.crudapp.interfaces.EntityDao;
-import com.aquent.crudapp.person.Person;
-import com.aquent.crudapp.person.PersonRowMapper;
+import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.person.PersonRowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,17 +15,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 @Repository
 @Qualifier("clientDAO")
 public class jdbcClientDAO implements EntityDao<Client, Person> {
 
     /** SQL for retrieving all client tuples */
-    private static final String LIST_CLIENTS = "SELECT  entity_id, " +
+    private static final String LIST_CLIENTS = "SELECT  client_id, " +
                                                        "company_name, " +
                                                        "website, " +
                                                        "phone, " +
@@ -37,7 +35,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                "ORDER BY company_name, website";
 
     /** SQL for retrieving all person tuples which are not contacts of a given client via client ID */
-    private static final String LIST_AVAILABLE_CONTACTS = "SELECT  entity_id, " +
+    private static final String LIST_AVAILABLE_CONTACTS = "SELECT  person_id, " +
                                                                   "first_name, " +
                                                                   "last_name, " +
                                                                   "email_address, " +
@@ -46,12 +44,12 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                                   "state, " +
                                                                   "zip_code " +
                                                          "FROM person " +
-                                                         "WHERE entity_id NOT IN ( " +
+                                                         "WHERE person_id NOT IN ( " +
                                                          "SELECT person_id " +
                                                          "FROM client_person_associations " +
                                                          "WHERE client_id = :clientId " +
                                                          ") " +
-                                                         "ORDER BY first_name, last_name, entity_id";
+                                                         "ORDER BY first_name, last_name, person_id";
 
     /** SQL for creating a client tuple */
     private static final String CREATE_CLIENT = "INSERT INTO client ( " +
@@ -73,7 +71,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                 ")";
 
     /** SQL for retrieving a given client tuple via client ID */
-    private static final String READ_CLIENT = "SELECT  entity_id, " +
+    private static final String READ_CLIENT = "SELECT  client_id, " +
                                                       "company_name, " +
                                                       "website, " +
                                                       "phone, " +
@@ -82,7 +80,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                       "state, " +
                                                       "zip_code " +
                                               "FROM client " +
-                                              "WHERE entity_id = :clientId";
+                                              "WHERE client_id = :clientId";
 
     /** SQL for updating a given client tuple via client ID */
     private static final String UPDATE_CLIENT = "UPDATE client " +
@@ -103,13 +101,13 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                     ":state, " +
                                                     ":zipCode" +
                                                 ") " +
-                                                "WHERE entity_id = :entityId";
+                                                "WHERE client_id = :entityId";
 
     /** SQL for retrieving a given person tuple via person ID */
-    private static final String READ_PERSON = "SELECT * FROM person WHERE entity_id = :personId";
+    private static final String READ_PERSON = "SELECT * FROM person WHERE person_id = :personId";
 
     /** SQL for deleting a given client tuple via client ID */
-    private static final String DELETE_CLIENT = "DELETE FROM client WHERE entity_id = :clientId";
+    private static final String DELETE_CLIENT = "DELETE FROM client WHERE client_id = :clientId";
 
     /** SQL for removing a new client/person association via person ID and client ID */
     private static final String REMOVE_ASSOCIATION = "DELETE FROM client_person_associations " +
@@ -126,7 +124,7 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                   ")";
 
     /** SQL for getting all associated person tuples via client ID */
-    private static final String GET_CONTACTS = "SELECT  p.entity_id, " +
+    private static final String GET_CONTACTS = "SELECT  p.person_id, " +
                                                        "first_name, " +
                                                        "last_name, " +
                                                        "email_address, " +
@@ -135,9 +133,9 @@ public class jdbcClientDAO implements EntityDao<Client, Person> {
                                                        "p.state, " +
                                                        "p.zip_code " +
                                                "FROM client c JOIN client_person_associations cpa" +
-                                               " ON c.entity_id = cpa.client_id " +
+                                               " ON c.client_id = cpa.client_id " +
                                                "JOIN person p " +
-                                               "ON cpa.person_id = p.entity_id " +
+                                               "ON cpa.person_id = p.person_id " +
                                                "WHERE cpa.client_id = :clientId";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

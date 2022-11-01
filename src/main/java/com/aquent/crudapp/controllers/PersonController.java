@@ -1,10 +1,11 @@
-package com.aquent.crudapp.person;
+package com.aquent.crudapp.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aquent.crudapp.client.Client;
+import com.aquent.crudapp.model.client.Client;
 import com.aquent.crudapp.interfaces.EntityService;
+import com.aquent.crudapp.model.person.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;

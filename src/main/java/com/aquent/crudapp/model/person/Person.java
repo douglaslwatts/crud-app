@@ -1,6 +1,6 @@
-package com.aquent.crudapp.person;
+package com.aquent.crudapp.model.person;
 
-import com.aquent.crudapp.abstracts.EntityAbstract;
+import com.aquent.crudapp.model.AbstractEntityWithAddress;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  * TODO: make an Entity interface for Client and Person to implement as to have the
  *       flexibility of adding future Entity types
  */
-public class Person extends EntityAbstract {
+public class Person extends AbstractEntityWithAddress {
 
     @NotNull
     @Size(min = 1, max = 50, message = "First name is required with maximum length of 50")
