@@ -1,4 +1,4 @@
-package com.aquent.crudapp.person;
+package com.aquent.crudapp.model.person;
 
 import org.springframework.jdbc.core.RowMapper;
 

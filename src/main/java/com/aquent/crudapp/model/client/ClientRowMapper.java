@@ -1,4 +1,4 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.model.client;
 
 import org.springframework.jdbc.core.RowMapper;
 

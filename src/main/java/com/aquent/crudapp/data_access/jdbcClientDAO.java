@@ -1,11 +1,11 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.data_access;
 
+import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.client.ClientRowMapper;
 import com.aquent.crudapp.interfaces.EntityDao;
-import com.aquent.crudapp.person.Person;
-import com.aquent.crudapp.person.PersonRowMapper;
+import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.person.PersonRowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,10 +15,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 @Repository
 @Qualifier("clientDAO")

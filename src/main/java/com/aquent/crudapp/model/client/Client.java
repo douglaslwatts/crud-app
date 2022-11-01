@@ -1,6 +1,6 @@
-package com.aquent.crudapp.client;
+package com.aquent.crudapp.model.client;
 
-import com.aquent.crudapp.abstracts.EntityAbstract;
+import com.aquent.crudapp.model.AbstractEntityWithAddress;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  * TODO: make an Entity interface for Client and Person to implement as to have the
  *       flexibility of adding future Entity types
  */
-public class Client extends EntityAbstract {
+public class Client extends AbstractEntityWithAddress {
 
     /** The company name of a client */
     @NotNull

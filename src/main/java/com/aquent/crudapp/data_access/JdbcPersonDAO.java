@@ -1,11 +1,13 @@
-package com.aquent.crudapp.person;
+package com.aquent.crudapp.data_access;
 
 import java.util.Collections;
 import java.util.List;
 
-import com.aquent.crudapp.client.Client;
-import com.aquent.crudapp.client.ClientRowMapper;
+import com.aquent.crudapp.model.client.Client;
+import com.aquent.crudapp.model.client.ClientRowMapper;
 import com.aquent.crudapp.interfaces.EntityDao;
+import com.aquent.crudapp.model.person.Person;
+import com.aquent.crudapp.model.person.PersonRowMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
